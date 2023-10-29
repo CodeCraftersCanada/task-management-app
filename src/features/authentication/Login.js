@@ -22,6 +22,10 @@ const Login = () => {
 		}
 	};
 
+	const signUp = () => {
+		Alert.alert("Success", "Sign up");
+	};
+
 	return (
 		<View style={styles.container}>
 			<Image
@@ -39,6 +43,7 @@ const Login = () => {
 				placeholderTextColor="white"
 				onChangeText={setEmail}
 				value={email}
+				name="email"
 			/>
 			<TextInput
 				style={styles.input}
@@ -47,10 +52,22 @@ const Login = () => {
 				secureTextEntry
 				onChangeText={setPassword}
 				value={password}
+				name="password"
 			/>
 			<TouchableOpacity style={styles.button} onPress={handleLogin}>
 				<Text className="text-xl font-semibold">Login</Text>
 			</TouchableOpacity>
+			<View className="flex-row items-center justify-center mt-4">
+				<Text className="text-primary-gray text-base font-semibold">
+					Don’t have an account?
+				</Text>
+				<Text
+					className="text-primary-yellow text-base font-semibold ml-2"
+					onPress={signUp}
+				>
+					Sign Up
+				</Text>
+			</View>
 		</View>
 	);
 };

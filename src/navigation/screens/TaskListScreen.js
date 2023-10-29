@@ -1,13 +1,13 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-export default function TaskListScreen({ navigation }) {
+const TaskListScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<Text>Task list</Text>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -17,3 +17,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
+
+export default TaskListScreen;

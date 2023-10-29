@@ -1,13 +1,13 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-export default function MemberScreen({ navigation }) {
+const MemberScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<Text>MemberScreen</Text>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -17,3 +17,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
+
+export default MemberScreen;

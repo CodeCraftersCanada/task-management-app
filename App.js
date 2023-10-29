@@ -1,18 +1,14 @@
 import * as React from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Provider } from "react-redux";
+import store from "./src/stores/store";
+import AppContainer from "./src/pages/AppContainer";
 
-import MainContainer from "./src/navigation/MainContainer";
+const App = () => {
+	return (
+		<Provider store={store}>
+			<AppContainer />
+		</Provider>
+	);
+};
 
-export default function App() {
-	return <MainContainer />;
-}
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-});
+export default App;

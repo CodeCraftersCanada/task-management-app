@@ -1,13 +1,13 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-export default function HomeScreen({ navigation }) {
+const HomeScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<Text>Home Screen</Text>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -17,3 +17,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
+
+export default HomeScreen;

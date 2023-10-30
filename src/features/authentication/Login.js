@@ -24,7 +24,7 @@ const Login = () => {
 		signIn(email, password)
 			.then((response) => {
 				if (response.data && response.data.status) {
-					Alert.alert("Success", "Logged in successfully!");
+					Alert.alert("Success", response.data.message);
 					try {
 						dispatch(login(response.data.token));
 					} catch (error) {

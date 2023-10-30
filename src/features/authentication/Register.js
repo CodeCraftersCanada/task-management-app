@@ -10,6 +10,7 @@ import {
 	Text,
 	TouchableOpacity,
 } from "react-native";
+import { signUp } from "../../services/authService";
 
 const Register = () => {
 	const navigation = useNavigation();
@@ -18,7 +19,16 @@ const Register = () => {
 	const [password, setPassword] = useState("");
 
 	const handleSignUp = () => {
-		Alert.alert("Success", "Sign up");
+		signUp(name, email, password)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					Alert.alert("Success", response.data.message);
+					navigation.navigate("Login");
+				}
+			})
+			.catch((error) => {
+				Alert.alert("Error", "Failed to register!");
+			});
 	};
 
 	const handleLogIn = () => {
@@ -94,15 +104,17 @@ const styles = StyleSheet.create({
 		paddingTop: 120,
 	},
 	input: {
-		height: 40,
+		height: 50,
 		borderColor: "gray",
 		borderWidth: 1,
 		marginBottom: 12,
-		paddingHorizontal: 8,
+		paddingHorizontal: 12,
+		paddingVertical: 12,
 		width: "100%",
+		backgroundColor: "#455A64",
+		color: "#FFFFFF",
 	},
 	image: {
-		textAlign: "center",
 		marginBottom: -20,
 	},
 	welcomeText: {

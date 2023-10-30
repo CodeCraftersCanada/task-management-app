@@ -7,7 +7,7 @@ import Login from "../features/authentication/Login";
 const AppContainer = () => {
 	const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 	//const isLoggedIn = useSelector(selectIsLoggedIn);
-
+	console.log("isLoggedIn ", isLoggedIn);
 	return isLoggedIn ? <MainContainer /> : <Login />;
 };
 

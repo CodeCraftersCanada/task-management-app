@@ -9,17 +9,25 @@ import {
 	Text,
 	TouchableOpacity,
 } from "react-native";
+import { signIn } from "../../services/authService";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	const handleLogin = () => {
-		if (email === "admin" && password === "password") {
-			Alert.alert("Success", "Logged in successfully!");
-		} else {
-			Alert.alert("Error", "Invalid credentials!");
-		}
+		signIn(email, password)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					Alert.alert("Success", "Logged in successfully!");
+					dispatch(login(response.data.token));
+				}
+			})
+			.catch((error) => {
+				//Alert.alert("Error", "Invalid credentials!");
+			});
 	};
 
 	const signUp = () => {
@@ -90,7 +98,6 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	image: {
-		textAlign: "center",
 		marginBottom: -20,
 	},
 	welcomeText: {

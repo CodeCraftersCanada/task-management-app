@@ -9,11 +9,14 @@ import {
 	Text,
 	TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { signIn } from "../../services/authService";
 import { useDispatch } from "react-redux";
+import { login } from "../../stores/authSlice";
 
 const Login = () => {
 	const dispatch = useDispatch();
+	const navigation = useNavigation();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -22,11 +25,19 @@ const Login = () => {
 			.then((response) => {
 				if (response.data && response.data.status) {
 					Alert.alert("Success", "Logged in successfully!");
-					dispatch(login(response.data.token));
+					try {
+						dispatch(login(response.data.token));
+					} catch (error) {
+						console.log("Dispatch error: ", error);
+					}
+					navigation.reset({
+						index: 0,
+						routes: [{ name: "Main" }],
+					});
 				}
 			})
 			.catch((error) => {
-				//Alert.alert("Error", "Invalid credentials!");
+				Alert.alert("Error", "Invalid credentials!");
 			});
 	};
 
@@ -90,12 +101,15 @@ const styles = StyleSheet.create({
 		paddingTop: 120,
 	},
 	input: {
-		height: 40,
+		height: 50,
 		borderColor: "gray",
 		borderWidth: 1,
 		marginBottom: 12,
-		paddingHorizontal: 8,
+		paddingHorizontal: 12,
+		paddingVertical: 12,
 		width: "100%",
+		backgroundColor: "#455A64",
+		color: "#FFFFFF",
 	},
 	image: {
 		marginBottom: -20,

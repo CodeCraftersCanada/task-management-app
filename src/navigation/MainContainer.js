@@ -1,7 +1,6 @@
 import * as React from "react";
 import { View, Text } from "react-native";
 
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -19,48 +18,46 @@ const Tab = createBottomTabNavigator();
 
 const MainContainer = () => {
 	return (
-		<NavigationContainer>
-			<Tab.Navigator
-				initialRouteName="{homeName}"
-				screenOptions={({ route }) => ({
-					tabBarIcon: ({ focused, color, size }) => {
-						let iconName;
-						let rn = route.name;
+		<Tab.Navigator
+			initialRouteName="{homeName}"
+			screenOptions={({ route }) => ({
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
+					let rn = route.name;
 
-						if (rn === homeName) {
-							iconName = focused ? "home" : "home-outline";
-						} else if (rn === taskListName) {
-							iconName = focused ? "list" : "list-outline";
-						} else if (rn === memberName) {
-							iconName = focused ? "person" : "person-outline";
-						} else if (rn === billingName) {
-							iconName = focused ? "cash" : "cash-outline";
-						}
+					if (rn === homeName) {
+						iconName = focused ? "home" : "home-outline";
+					} else if (rn === taskListName) {
+						iconName = focused ? "list" : "list-outline";
+					} else if (rn === memberName) {
+						iconName = focused ? "person" : "person-outline";
+					} else if (rn === billingName) {
+						iconName = focused ? "cash" : "cash-outline";
+					}
 
-						return <Ionicons name={iconName} size={size} color={color} />;
+					return <Ionicons name={iconName} size={size} color={color} />;
+				},
+				tabBarOptions: {
+					labelStyle: {
+						fontSize: 12,
 					},
-					tabBarOptions: {
-						labelStyle: {
-							fontSize: 12,
-						},
-						tabStyle: {
-							width: 100,
-						},
-						style: {
-							paddingTop: 50,
-							backgroundColor: "red",
-						},
+					tabStyle: {
+						width: 100,
 					},
-					tabBarActiveTintColor: "tomato",
-					tabBarInActiveTintColor: "grey",
-				})}
-			>
-				<Tab.Screen name={homeName} component={HomeScreen} />
-				<Tab.Screen name={taskListName} component={TaskListScreen} />
-				<Tab.Screen name={billingName} component={BillingScreen} />
-				<Tab.Screen name={memberName} component={MemberScreen} />
-			</Tab.Navigator>
-		</NavigationContainer>
+					style: {
+						paddingTop: 50,
+						backgroundColor: "red",
+					},
+				},
+				tabBarActiveTintColor: "tomato",
+				tabBarInActiveTintColor: "grey",
+			})}
+		>
+			<Tab.Screen name={homeName} component={HomeScreen} />
+			<Tab.Screen name={taskListName} component={TaskListScreen} />
+			<Tab.Screen name={billingName} component={BillingScreen} />
+			<Tab.Screen name={memberName} component={MemberScreen} />
+		</Tab.Navigator>
 	);
 };
 

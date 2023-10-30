@@ -41,8 +41,8 @@ const Login = () => {
 			});
 	};
 
-	const signUp = () => {
-		Alert.alert("Success", "Sign up");
+	const handleSignUp = () => {
+		navigation.navigate("Register");
 	};
 
 	return (
@@ -82,7 +82,7 @@ const Login = () => {
 				</Text>
 				<Text
 					className="text-primary-yellow text-base font-semibold ml-2"
-					onPress={signUp}
+					onPress={handleSignUp}
 				>
 					Sign Up
 				</Text>

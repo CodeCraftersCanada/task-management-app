@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
 	View,
 	TextInput,
@@ -11,19 +12,17 @@ import {
 } from "react-native";
 
 const Register = () => {
+	const navigation = useNavigation();
+	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const handleLogin = () => {
-		if (email === "admin" && password === "password") {
-			Alert.alert("Success", "Logged in successfully!");
-		} else {
-			Alert.alert("Error", "Invalid credentials!");
-		}
+	const handleSignUp = () => {
+		Alert.alert("Success", "Sign up");
 	};
 
-	const signUp = () => {
-		Alert.alert("Success", "Sign up");
+	const handleLogIn = () => {
+		navigation.navigate("Login");
 	};
 
 	return (
@@ -39,6 +38,13 @@ const Register = () => {
 			<Text style={styles.welcomeText}>Create your account</Text>
 			<TextInput
 				style={styles.input}
+				placeholder="Name"
+				placeholderTextColor="white"
+				onChangeText={setName}
+				value={name}
+			/>
+			<TextInput
+				style={styles.input}
 				placeholder="Email Address"
 				placeholderTextColor="white"
 				onChangeText={setEmail}
@@ -52,18 +58,26 @@ const Register = () => {
 				onChangeText={setPassword}
 				value={password}
 			/>
-			<TouchableOpacity style={styles.button} onPress={handleLogin}>
-				<Text className="text-xl font-semibold">Login</Text>
+			<TextInput
+				style={styles.input}
+				placeholder="Confirm Password"
+				placeholderTextColor="white"
+				secureTextEntry
+				onChangeText={setPassword}
+				value={password}
+			/>
+			<TouchableOpacity style={styles.button} onPress={handleSignUp}>
+				<Text className="text-xl font-semibold">Sign Up</Text>
 			</TouchableOpacity>
 			<View className="flex-row items-center justify-center mt-4">
 				<Text className="text-primary-gray text-base font-semibold">
-					Don’t have an account?
+					Already have an account?
 				</Text>
 				<Text
 					className="text-primary-yellow text-base font-semibold ml-2"
-					onPress={signUp}
+					onPress={handleLogIn}
 				>
-					Sign Up
+					Log In
 				</Text>
 			</View>
 		</View>

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainContainer from "../navigation/MainContainer";
 import Login from "../features/authentication/Login";
+import Register from "../features/authentication/Register";
 
 const Stack = createStackNavigator();
 
@@ -18,7 +19,10 @@ const AppContainer = () => {
 			{isLoggedIn ? (
 				<Stack.Screen name="Main" component={MainContainer} />
 			) : (
-				<Stack.Screen name="Login" component={Login} />
+				<>
+					<Stack.Screen name="Login" component={Login} />
+					<Stack.Screen name="Register" component={Register} />
+				</>
 			)}
 		</Stack.Navigator>
 	);

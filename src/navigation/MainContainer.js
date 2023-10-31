@@ -8,11 +8,14 @@ import HomeScreen from "./screens/HomeScreen";
 import TaskListScreen from "./screens/TaskListScreen";
 import MemberScreen from "./screens/MemberScreen";
 import BillingScreen from "./screens/BillingScreen";
+import SettingScreen from "./screens/SettingScreen";
+import NewTaskScreen from "./screens/NewTaskScreen";
 
 const homeName = "Home";
-const taskListName = "Tasks";
 const memberName = "Members";
 const billingName = "Billing";
+const settingName = "Setting";
+const newTaskName = "New Task";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,36 +30,42 @@ const MainContainer = () => {
 
 					if (rn === homeName) {
 						iconName = focused ? "home" : "home-outline";
-					} else if (rn === taskListName) {
-						iconName = focused ? "list" : "list-outline";
 					} else if (rn === memberName) {
 						iconName = focused ? "person" : "person-outline";
 					} else if (rn === billingName) {
 						iconName = focused ? "cash" : "cash-outline";
+					} else if (rn === settingName) {
+						iconName = focused ? "settings" : "settings-outline";
+					} else if (rn === newTaskName) {
+						iconName = focused ? "add-circle" : "add-circle-outline";
 					}
 
 					return <Ionicons name={iconName} size={size} color={color} />;
 				},
+				headerShown: false,
 				tabBarOptions: {
 					labelStyle: {
-						fontSize: 12,
+						fontSize: 14,
 					},
 					tabStyle: {
 						width: 100,
 					},
-					style: {
-						paddingTop: 50,
-						backgroundColor: "red",
-					},
 				},
-				tabBarActiveTintColor: "tomato",
-				tabBarInActiveTintColor: "grey",
+				tabBarStyle: {
+					height: 90,
+					paddingTop: 10,
+					borderTopWidth: 0,
+					backgroundColor: "#263238",
+				},
+				tabBarActiveTintColor: "#FED36A",
+				tabBarInActiveTintColor: "#617D8A",
 			})}
 		>
 			<Tab.Screen name={homeName} component={HomeScreen} />
-			<Tab.Screen name={taskListName} component={TaskListScreen} />
 			<Tab.Screen name={billingName} component={BillingScreen} />
+			<Tab.Screen name={newTaskName} component={NewTaskScreen} />
 			<Tab.Screen name={memberName} component={MemberScreen} />
+			<Tab.Screen name={settingName} component={SettingScreen} />
 		</Tab.Navigator>
 	);
 };

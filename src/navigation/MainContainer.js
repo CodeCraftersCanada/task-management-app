@@ -42,7 +42,7 @@ const MainContainer = () => {
 
 					return <Ionicons name={iconName} size={size} color={color} />;
 				},
-				headerShown: false,
+				headerShown: true,
 				tabBarOptions: {
 					labelStyle: {
 						fontSize: 14,
@@ -57,6 +57,11 @@ const MainContainer = () => {
 					borderTopWidth: 0,
 					backgroundColor: "#263238",
 				},
+				headerStyle: {
+					backgroundColor: "#212832",
+				},
+				headerTintColor: "#FFF",
+				headerShadowVisible: false,
 				tabBarActiveTintColor: "#FED36A",
 				tabBarInActiveTintColor: "#617D8A",
 			})}

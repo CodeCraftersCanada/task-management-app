@@ -39,13 +39,24 @@ const AutoCompleteDropdown = () => {
 
 	const showAllUsers = () => {
 		setFilteredUsers(users);
-		setQuery(""); // Clear the current query
+		console.log("filteredUsers ", filteredUsers);
+		setQuery(" "); // Clear the current query
+	};
+
+	const handleSelectItem = (item) => {
+		setQuery(item.name);
+		setFilteredUsers([]);
+		console.log(item, " tesr ");
+		console.log(item, " query ", query);
 	};
 
 	const renderUserItem = ({ item }) => (
-		<TouchableOpacity onPress={() => setQuery(item.name)}>
+		<TouchableOpacity onPress={() => handleSelectItem(item)}>
 			<View style={styles.userItem}>
-				<Image source={{ uri: item.image }} style={styles.userImage} />
+				<Image
+					source={require("../assets/img/logo.png")}
+					style={styles.userImage}
+				/>
 				<Text style={styles.userName}>{item.name}</Text>
 			</View>
 		</TouchableOpacity>
@@ -56,10 +67,12 @@ const AutoCompleteDropdown = () => {
 			<View style={styles.row}>
 				<View style={styles.columnAutoComplete}>
 					<Autocomplete
+						value={query}
+						key={filteredUsers.length}
 						editable={true}
 						autoCapitalize="none"
 						autoCorrect={false}
-						data={query.length === 0 ? [] : filteredUsers}
+						data={filteredUsers}
 						defaultValue={query}
 						onChangeText={(text) => {
 							setQuery(text);
@@ -72,7 +85,10 @@ const AutoCompleteDropdown = () => {
 							keyExtractor: (item) => item.id.toString(),
 							renderItem: renderUserItem,
 						}}
-						style={styles.autocomplete}
+						containerStyle={styles.autocomplete_container}
+						inputContainerStyle={styles.autocomplete_input}
+						listContainerStyle={styles.autocomplete_list_container}
+						listStyle={styles.autocomplete_list}
 					/>
 				</View>
 				<View style={styles.columnIcon}>
@@ -118,7 +134,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
-
 	columnIcon: {
 		width: "20%",
 		justifyContent: "center",
@@ -126,7 +141,8 @@ const styles = StyleSheet.create({
 		marginTop: 0,
 		marginBottom: 10,
 		backgroundColor: "#FED36A",
-		color: " white",
+		color: "white",
+		height: 50,
 	},
 
 	columnAutoComplete: {
@@ -137,13 +153,32 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		backgroundColor: "#455A64",
 		color: "white",
+		height: 50,
 	},
-	autocomplete: {
+	autocomplete_container: {
 		width: "100%",
-		backgroundColor: "#455A64",
+		height: 50,
+		backgroundColor: "white",
+	},
+	autocomplete_input: {
 		borderWidth: 0,
-		borderColor: "#455A64",
-		color: "white",
+		backgroundColor: "#455A64",
+	},
+	autocomplete_list_container: {
+		borderWidth: 0,
+	},
+	autocomplete_list: {
+		width: "100%",
+		maxHeight: 250,
+		margin: 0,
+		padding: 5,
+		zIndex: 3,
+		borderColor: "black",
+		borderTopWidth: 0,
+		borderBottomWidth: 1,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+		backgroundColor: "#455A64",
 	},
 });
 

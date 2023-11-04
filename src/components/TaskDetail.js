@@ -80,6 +80,16 @@ const TaskDetail = () => {
 					value={formData.description}
 				/>
 				<Text style={styles.fieldLabel}>Add Team Members</Text>
+				{/* <View style={styles.row}>
+					<View style={styles.columnAutoComplete}></View>
+					<View style={styles.columnIcon}>
+						<TouchableOpacity>
+							<View>
+								<Ionicons name={"add"} size={28} color={"#263238"} />
+							</View>
+						</TouchableOpacity>
+					</View>
+				</View> */}
 				<AutoCompleteDropdown />
 				<View style={styles.row}>
 					<View style={styles.column}>
@@ -141,14 +151,6 @@ const TaskDetail = () => {
 						</View>
 					</View>
 				</View>
-				<View style={styles.row}>
-					<View style={styles.column}>
-						<Text>Column 1</Text>
-					</View>
-					<View style={styles.column}>
-						<Text>Column 2</Text>
-					</View>
-				</View>
 			</View>
 		</SafeAreaView>
 	);
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "flex-start",
 		alignItems: "flex-start",
-		marginTop: 10,
+		marginTop: 0,
 		marginBottom: 10,
 		padding: 4,
 	},
@@ -217,6 +219,27 @@ const styles = StyleSheet.create({
 		marginTop: 0,
 		marginBottom: 10,
 		backgroundColor: "#455A64",
+	},
+
+	columnIcon: {
+		width: "20%",
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 0,
+		marginBottom: 10,
+		backgroundColor: "#FED36A",
+		color: "white",
+	},
+
+	columnAutoComplete: {
+		width: "80%",
+		justifyContent: "flex-start",
+		alignItems: "flex-start",
+		marginTop: 0,
+		marginBottom: 10,
+		backgroundColor: "#455A64",
+		color: "white",
+		height: 50,
 	},
 });
 

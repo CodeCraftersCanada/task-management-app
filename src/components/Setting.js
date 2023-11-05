@@ -51,7 +51,7 @@ const Setting = () => {
 				<TextInput
 					style={styles.input}
 					placeholder="Name"
-					placeholderTextColor="white"
+					placeholderTextColor="#6F8793"
 					onChangeText={(value) => handleInputChange("name", value)}
 					value={formData.name}
 				/>
@@ -73,7 +73,7 @@ const Setting = () => {
 				<TextInput
 					style={styles.input}
 					placeholder="Email"
-					placeholderTextColor="white"
+					placeholderTextColor="#6F8793"
 					onChangeText={(value) => handleInputChange("email", value)}
 					value={formData.email}
 				/>
@@ -95,7 +95,7 @@ const Setting = () => {
 				<TextInput
 					style={styles.input}
 					placeholder="Hourly Rate"
-					placeholderTextColor="white"
+					placeholderTextColor="#6F8793"
 					onChangeText={(value) => handleInputChange("hourly_rate", value)}
 					value={formData.hourly_rate}
 				/>

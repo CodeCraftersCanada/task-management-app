@@ -70,7 +70,7 @@ const TaskDetail = () => {
 				<Text style={styles.fieldLabel}>Task Title</Text>
 				<TextInput
 					style={styles.input}
-					placeholderTextColor="white"
+					placeholderTextColor="#6F8793"
 					onChangeText={(value) => handleInputChange("title", value)}
 					value={formData.title}
 				/>

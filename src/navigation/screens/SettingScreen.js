@@ -1,20 +1,23 @@
 import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, SafeAreaView } from "react-native";
+
+import Setting from "../../components/Setting";
 
 const SettingScreen = ({ navigation }) => {
 	return (
-		<View style={styles.container}>
-			<Text>SettingScreen</Text>
-		</View>
+		<SafeAreaView style={styles.container}>
+			<Setting></Setting>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "flex-start",
+		paddingHorizontal: 20,
+		paddingVertical: 20,
+		backgroundColor: "#212832",
 	},
 });
 

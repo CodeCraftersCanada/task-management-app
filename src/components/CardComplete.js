@@ -85,10 +85,7 @@ const CardComplete = ({ active }) => {
 const styles = StyleSheet.create({
 	cardContainer: {
 		height: 180,
-		width: "55%",
-		backgroundColor: "#455A64",
 		padding: 10,
-		marginRight: 10,
 	},
 	activeCard: {
 		backgroundColor: "#FED36A",

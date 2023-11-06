@@ -1,8 +1,18 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Image, TextInput } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	Image,
+	TextInput,
+	ScrollView,
+	Dimensions,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import CardComplete from "../components/CardComplete";
+
+const { width } = Dimensions.get("window");
 
 const Home = () => {
 	const [search, setSearch] = useState("");
@@ -60,15 +70,54 @@ const Home = () => {
 				</View>
 			</View>
 
+			<ScrollView
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={styles.scrollViewContainer}
+			>
+				<View style={styles.card}>
+					<CardComplete active={true} />
+				</View>
+				<View style={styles.card}>
+					<CardComplete />
+				</View>
+				<View style={styles.card}>
+					<CardComplete active={true} />
+				</View>
+			</ScrollView>
+
 			<View style={styles.row}>
-				<CardComplete active={true} />
-				<CardComplete />
+				<View style={styles.columnLeftLabel}>
+					<Text style={styles.largeLabel}>Ongoing Projects</Text>
+				</View>
+				<View style={styles.columnButton}>
+					<Text style={styles.mediumLabel}>See all</Text>
+				</View>
 			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	scrollViewContainer: {
+		alignItems: "center",
+		paddingStart: 5,
+		paddingEnd: 5,
+	},
+	card: {
+		backgroundColor: "#455A64",
+		width: width * 0.55,
+		height: 180,
+		elevation: 3,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.3,
+		shadowRadius: 4,
+		marginRight: 10,
+	},
+	cardText: {
+		fontSize: 18,
+	},
 	container: {
 		marginTop: 16,
 	},
@@ -152,6 +201,11 @@ const styles = StyleSheet.create({
 		width: "20%",
 		justifyContent: "flex-end",
 		alignItems: "center",
+	},
+	scrollViewContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginBottom: 20,
 	},
 });
 

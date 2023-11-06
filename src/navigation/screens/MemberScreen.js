@@ -1,10 +1,11 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
+import Member from "../../components/Member";
 
 const MemberScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
-			<Text>MemberScreen</Text>
+			<Member />
 		</View>
 	);
 };

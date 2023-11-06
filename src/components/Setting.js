@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image, TextInput } from "react-native";
+import { StyleSheet, View, Image, TextInput, SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Setting = () => {
@@ -20,99 +20,102 @@ const Setting = () => {
 	};
 
 	return (
-		<View style={styles.settingContainer}>
-			<View
-				style={[
-					styles.imageWrapper,
-					styles.centeredContent,
-					styles.imageMarginBottom,
-				]}
-			>
-				<View style={styles.imageFrame}>
-					<Image
-						style={styles.image}
-						source={require("../assets/img/dummy.png")}
-					/>
-				</View>
-				<View style={[styles.imageAddWrapper, styles.centeredContent]}>
-					<View style={styles.addIconFrame}>
-						<Ionicons name={"add-outline"} size={18} color={"#FFF"} />
+		<SafeAreaView>
+			<View style={styles.settingContainer}>
+				<View
+					style={[
+						styles.imageWrapper,
+						styles.centeredContent,
+						styles.imageMarginBottom,
+					]}
+				>
+					<View style={styles.imageFrame}>
+						<Image
+							style={styles.image}
+							source={require("../assets/img/dummy.png")}
+						/>
+					</View>
+					<View style={[styles.imageAddWrapper, styles.centeredContent]}>
+						<View style={styles.addIconFrame}>
+							<Ionicons name={"add-outline"} size={18} color={"#FFF"} />
+						</View>
 					</View>
 				</View>
-			</View>
 
-			<View style={styles.fieldWrapper}>
-				<Ionicons
-					style={styles.fieldIconLeft}
-					name={"person-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder="Name"
-					placeholderTextColor="#6F8793"
-					onChangeText={(value) => handleInputChange("name", value)}
-					value={formData.name}
-				/>
-				<Ionicons
-					style={styles.fieldIconRight}
-					name={"create-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
-			</View>
+				<View style={styles.fieldWrapper}>
+					<Ionicons
+						style={styles.fieldIconLeft}
+						name={"person-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+					<TextInput
+						style={styles.input}
+						placeholder="Name"
+						placeholderTextColor="#6F8793"
+						onChangeText={(value) => handleInputChange("name", value)}
+						value={formData.name}
+					/>
+					<Ionicons
+						style={styles.fieldIconRight}
+						name={"create-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+				</View>
 
-			<View style={styles.fieldWrapper}>
-				<Ionicons
-					style={[styles.fieldIconLeft, styles.emailIcon]}
-					name={"mail-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder="Email"
-					placeholderTextColor="#6F8793"
-					onChangeText={(value) => handleInputChange("email", value)}
-					value={formData.email}
-				/>
-				<Ionicons
-					style={styles.fieldIconRight}
-					name={"create-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
-			</View>
+				<View style={styles.fieldWrapper}>
+					<Ionicons
+						style={[styles.fieldIconLeft, styles.emailIcon]}
+						name={"mail-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+					<TextInput
+						style={styles.input}
+						placeholder="Email"
+						placeholderTextColor="#6F8793"
+						onChangeText={(value) => handleInputChange("email", value)}
+						value={formData.email}
+					/>
+					<Ionicons
+						style={styles.fieldIconRight}
+						name={"create-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+				</View>
 
-			<View style={styles.fieldWrapper}>
-				<Ionicons
-					style={[styles.fieldIconLeft, styles.emailIcon]}
-					name={"cash-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder="Hourly Rate"
-					placeholderTextColor="#6F8793"
-					onChangeText={(value) => handleInputChange("hourly_rate", value)}
-					value={formData.hourly_rate}
-				/>
-				<Ionicons
-					style={styles.fieldIconRight}
-					name={"create-outline"}
-					size={24}
-					color={"#8CAAB9"}
-				/>
+				<View style={styles.fieldWrapper}>
+					<Ionicons
+						style={[styles.fieldIconLeft, styles.emailIcon]}
+						name={"cash-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+					<TextInput
+						style={styles.input}
+						placeholder="Hourly Rate"
+						placeholderTextColor="#6F8793"
+						onChangeText={(value) => handleInputChange("hourly_rate", value)}
+						value={formData.hourly_rate}
+					/>
+					<Ionicons
+						style={styles.fieldIconRight}
+						name={"create-outline"}
+						size={24}
+						color={"#8CAAB9"}
+					/>
+				</View>
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	settingContainer: {
-		paddingHorizontal: 0,
+		paddingHorizontal: 20,
+		paddingVertical: 20,
 		backgroundColor: "#212832",
 		marginTop: 10,
 	},

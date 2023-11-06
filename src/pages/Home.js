@@ -8,6 +8,7 @@ import {
 	ScrollView,
 	Dimensions,
 	FlatList,
+	TouchableOpacity,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -16,7 +17,7 @@ import CardInprogress from "../components/CardInprogress";
 
 const { width } = Dimensions.get("window");
 
-const Home = () => {
+const Home = ({ navigation }) => {
 	const [search, setSearch] = useState("");
 
 	const DATA = [
@@ -41,10 +42,12 @@ const Home = () => {
 					</View>
 				</View>
 				<View style={styles.columnRight}>
-					<Image
-						style={styles.image}
-						source={require("../assets/img/dummy.png")}
-					/>
+					<TouchableOpacity onPress={() => navigation.navigate("Setting")}>
+						<Image
+							style={styles.image}
+							source={require("../assets/img/dummy.png")}
+						/>
+					</TouchableOpacity>
 				</View>
 			</View>
 
@@ -76,7 +79,13 @@ const Home = () => {
 					<Text style={styles.largeLabel}>Completed Tasks</Text>
 				</View>
 				<View style={styles.columnButton}>
-					<Text style={styles.mediumLabel}>See all</Text>
+					<TouchableOpacity
+						onPress={() =>
+							navigation.navigate("Tasks", { status: "completed" })
+						}
+					>
+						<Text style={styles.mediumLabel}>See all</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 
@@ -101,7 +110,11 @@ const Home = () => {
 					<Text style={styles.largeLabel}>Ongoing Projects</Text>
 				</View>
 				<View style={styles.columnButton}>
-					<Text style={styles.mediumLabel}>See all</Text>
+					<TouchableOpacity
+						onPress={() => navigation.navigate("Tasks", { status: "ongoing" })}
+					>
+						<Text style={styles.mediumLabel}>See all</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 

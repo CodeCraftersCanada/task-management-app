@@ -1,12 +1,12 @@
 import * as React from "react";
 import { StyleSheet, View, Text, SafeAreaView } from "react-native";
 
-import Home from "../../pages/Home";
+const TaskList = ({ route, navigation }) => {
+	const { status } = route.params || { status: "completed" };
 
-const HomeScreen = ({ navigation }) => {
 	return (
 		<SafeAreaView style={styles.container}>
-			<Home navigation={navigation} />
+			<Text>TaskList {status}</Text>
 		</SafeAreaView>
 	);
 };
@@ -20,4 +20,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default HomeScreen;
+export default TaskList;

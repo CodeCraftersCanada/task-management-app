@@ -8,13 +8,11 @@ import HomeScreen from "./screens/HomeScreen";
 import TaskListScreen from "./screens/TaskListScreen";
 import MemberScreen from "./screens/MemberScreen";
 import BillingScreen from "./screens/BillingScreen";
-import SettingScreen from "./screens/SettingScreen";
 import NewTaskScreen from "./screens/NewTaskScreen";
 
 const homeName = "Home";
 const memberName = "Members";
 const billingName = "Billing";
-const settingName = "Setting";
 const newTaskName = "New Task";
 
 const Tab = createBottomTabNavigator();
@@ -34,15 +32,13 @@ const MainContainer = () => {
 						iconName = focused ? "person" : "person-outline";
 					} else if (rn === billingName) {
 						iconName = focused ? "cash" : "cash-outline";
-					} else if (rn === settingName) {
-						iconName = focused ? "settings" : "settings-outline";
 					} else if (rn === newTaskName) {
 						iconName = focused ? "add-circle" : "add-circle-outline";
 					}
 
 					return <Ionicons name={iconName} size={size} color={color} />;
 				},
-				headerShown: true,
+				headerShown: false,
 				tabBarOptions: {
 					labelStyle: {
 						fontSize: 14,
@@ -70,7 +66,6 @@ const MainContainer = () => {
 			<Tab.Screen name={billingName} component={BillingScreen} />
 			<Tab.Screen name={newTaskName} component={NewTaskScreen} />
 			<Tab.Screen name={memberName} component={MemberScreen} />
-			<Tab.Screen name={settingName} component={SettingScreen} />
 		</Tab.Navigator>
 	);
 };

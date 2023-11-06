@@ -114,7 +114,7 @@ const Setting = () => {
 
 const styles = StyleSheet.create({
 	settingContainer: {
-		paddingHorizontal: 20,
+		paddingHorizontal: 10,
 		paddingVertical: 20,
 		backgroundColor: "#212832",
 		marginTop: 10,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
 		borderColor: "#FED36A",
 		padding: 3,
 		borderRadius: 100,
-		width: "39%",
+		width: "36.8%",
 		alignSelf: "center",
 	},
 	image: {},

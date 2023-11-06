@@ -7,19 +7,29 @@ import {
 	TextInput,
 	ScrollView,
 	Dimensions,
+	FlatList,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import CardComplete from "../components/CardComplete";
+import CardInprogress from "../components/CardInprogress";
 
 const { width } = Dimensions.get("window");
 
 const Home = () => {
 	const [search, setSearch] = useState("");
 
+	const DATA = [
+		{ id: "1", title: "First Item" },
+		{ id: "2", title: "Second Item" },
+		{ id: "3", title: "Third Item" },
+	];
+
 	const handleSearchChange = () => {
 		console.log("search");
 	};
+
+	const renderItem = ({ item }) => <CardInprogress />;
 
 	return (
 		<View style={styles.container}>
@@ -27,7 +37,7 @@ const Home = () => {
 				<View style={styles.columnLeft}>
 					<View>
 						<Text style={styles.smallLabel}>Welcome Back!</Text>
-						<Text style={styles.largeLabel}>Fazil Laghari</Text>
+						<Text style={styles.largeLabel}>Tim Horton</Text>
 					</View>
 				</View>
 				<View style={styles.columnRight}>
@@ -93,6 +103,15 @@ const Home = () => {
 				<View style={styles.columnButton}>
 					<Text style={styles.mediumLabel}>See all</Text>
 				</View>
+			</View>
+
+			<View>
+				<FlatList
+					data={DATA}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.id}
+					contentContainerStyle={{ paddingBottom: 20 }}
+				/>
 			</View>
 		</View>
 	);

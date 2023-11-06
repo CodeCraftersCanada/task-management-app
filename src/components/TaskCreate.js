@@ -13,7 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import TextArea from "./TextArea";
 import AutoCompleteDropdown from "./AutoCompleteDropdown";
 
-const TaskDetail = () => {
+const TaskCreate = () => {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -243,4 +243,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default TaskDetail;
+export default TaskCreate;

@@ -30,7 +30,7 @@ const Home = ({ navigation }) => {
 		console.log("search");
 	};
 
-	const renderItem = ({ item }) => <CardInprogress />;
+	const renderItem = ({ item }) => <CardInprogress navigation={navigation} />;
 
 	return (
 		<View style={styles.container}>
@@ -95,13 +95,13 @@ const Home = ({ navigation }) => {
 				contentContainerStyle={styles.scrollViewContainer}
 			>
 				<View style={styles.card}>
-					<CardComplete active={true} />
+					<CardComplete active={true} navigation={navigation} />
 				</View>
 				<View style={styles.card}>
-					<CardComplete />
+					<CardComplete navigation={navigation} />
 				</View>
 				<View style={styles.card}>
-					<CardComplete active={true} />
+					<CardComplete active={true} navigation={navigation} />
 				</View>
 			</ScrollView>
 

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import TaskDetail from "../../components/TaskDetail";
+import TaskCreate from "../../components/TaskCreate";
 
 const NewTaskScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
-			<TaskDetail />
+			<TaskCreate />
 		</View>
 	);
 };

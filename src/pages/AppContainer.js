@@ -6,6 +6,7 @@ import Login from "../features/authentication/Login";
 import Register from "../features/authentication/Register";
 import SettingScreen from "../navigation/screens/SettingScreen";
 import TaskList from "./TaskList";
+import TaskDetail from "./TaskDetail";
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ const AppContainer = () => {
 					<Stack.Screen name="Home" component={MainContainer} />
 					<Stack.Screen name="Setting" component={SettingScreen} />
 					<Stack.Screen name="Tasks" component={TaskList} />
+					<Stack.Screen name="Task Detail" component={TaskDetail} />
 				</>
 			) : (
 				<>

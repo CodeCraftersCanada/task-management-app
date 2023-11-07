@@ -1,17 +1,18 @@
 import * as React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import ProgressBar from "./ProgressBar";
+import images from "../utils/imageAssets";
 
-const CardComplete = ({ active, navigation }) => {
-	const handlePress = () => {
-		navigation.navigate("Task Detail");
+const CardComplete = ({ active, task, navigation }) => {
+	const handlePress = (task) => {
+		navigation.navigate("Task Detail", { task: task });
 	};
 
 	return (
-		<TouchableOpacity onPress={handlePress}>
+		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer, active && styles.activeCard]}>
 				<Text style={[styles.cardLargeText, !active && styles.colorWhite]}>
-					Real Estate Website Design
+					{task.title}
 				</Text>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>
@@ -22,7 +23,7 @@ const CardComplete = ({ active, navigation }) => {
 					<View style={[styles.columnRight]}>
 						<Image
 							style={styles.image}
-							source={require("../assets/img/dummy.png")}
+							source={images[task.assigned.filename]}
 						/>
 					</View>
 				</View>
@@ -40,7 +41,8 @@ const CardComplete = ({ active, navigation }) => {
 								!active && styles.colorWhite,
 							]}
 						>
-							04:30:00
+							{/* 04:30:00 */}
+							{task.task_hours}
 						</Text>
 					</View>
 				</View>
@@ -58,7 +60,7 @@ const CardComplete = ({ active, navigation }) => {
 								!active && styles.colorWhite,
 							]}
 						>
-							$40.00
+							{/* $40.00 */}${task.task_hours * task.assigned.hourly_rate}
 						</Text>
 					</View>
 				</View>

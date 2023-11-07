@@ -10,7 +10,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 
-const TaskDetail = ({ route, navigation }) => {
+const TaskDetail = ({ route, navigation, task }) => {
 	const { status } = route.params || { status: "completed" };
 
 	const handleAdd = () => {

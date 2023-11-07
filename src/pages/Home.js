@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -9,22 +10,51 @@ import {
 	Dimensions,
 	FlatList,
 	TouchableOpacity,
+	Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import CardComplete from "../components/CardComplete";
 import CardInprogress from "../components/CardInprogress";
+import images from "../utils/imageAssets";
+import { getTasks } from "../services/homeService";
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
+	const userInfo = useSelector((state) => state.auth.user);
+	const token = useSelector((state) => state.auth.token);
+	const [completedTasks, setCompletedTasks] = useState([]);
+	const [ongoingTasks, setOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
-	const DATA = [
-		{ id: "1", title: "First Item" },
-		{ id: "2", title: "Second Item" },
-		{ id: "3", title: "Third Item" },
-	];
+	getTasks(token, 3, userInfo.user_type_id, userInfo.id)
+		.then((response) => {
+			if (response.data && response.data.status) {
+				try {
+					setCompletedTasks(response.data.tasks);
+				} catch (error) {
+					console.log("Dispatch error: ", error);
+				}
+			}
+		})
+		.catch((error) => {
+			//Alert.alert("Error", "Invalid credentials!");
+		});
+
+	getTasks(token, 2, userInfo.user_type_id, userInfo.id)
+		.then((response) => {
+			if (response.data && response.data.status) {
+				try {
+					setOngoingTasks(response.data.tasks);
+				} catch (error) {
+					console.log("Dispatch error: ", error);
+				}
+			}
+		})
+		.catch((error) => {
+			//Alert.alert("Error", "Invalid credentials!");
+		});
 
 	const handleSearchChange = () => {
 		console.log("search");
@@ -38,15 +68,12 @@ const Home = ({ navigation }) => {
 				<View style={styles.columnLeft}>
 					<View>
 						<Text style={styles.smallLabel}>Welcome Back!</Text>
-						<Text style={styles.largeLabel}>Tim Horton</Text>
+						<Text style={styles.largeLabel}>{userInfo.name}</Text>
 					</View>
 				</View>
 				<View style={styles.columnRight}>
 					<TouchableOpacity onPress={() => navigation.navigate("Setting")}>
-						<Image
-							style={styles.image}
-							source={require("../assets/img/dummy.png")}
-						/>
+						<Image style={styles.image} source={images[userInfo.filename]} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -94,15 +121,15 @@ const Home = ({ navigation }) => {
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={styles.scrollViewContainer}
 			>
-				<View style={styles.card}>
-					<CardComplete active={true} navigation={navigation} />
-				</View>
-				<View style={styles.card}>
-					<CardComplete navigation={navigation} />
-				</View>
-				<View style={styles.card}>
-					<CardComplete active={true} navigation={navigation} />
-				</View>
+				{completedTasks.map((task, index) => (
+					<View style={styles.card} key={task.id}>
+						<CardComplete
+							active={index === 0}
+							task={task}
+							navigation={navigation}
+						/>
+					</View>
+				))}
 			</ScrollView>
 
 			<View style={styles.row}>
@@ -120,7 +147,7 @@ const Home = ({ navigation }) => {
 
 			<View>
 				<FlatList
-					data={DATA}
+					data={ongoingTasks}
 					renderItem={renderItem}
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ paddingBottom: 20 }}
@@ -159,13 +186,13 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	columnLeft: {
-		width: "50%",
+		width: "70%",
 		justifyContent: "flex-start",
 		alignItems: "flex-start",
 		marginTop: 0,
 	},
 	columnRight: {
-		width: "50%",
+		width: "30%",
 		justifyContent: "flex-end",
 		alignItems: "flex-end",
 	},

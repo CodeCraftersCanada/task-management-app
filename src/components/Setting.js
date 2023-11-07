@@ -47,7 +47,7 @@ const Setting = () => {
 				}
 			})
 			.catch((error) => {
-				Alert.alert("Error", "Invalid credentials!");
+				//Alert.alert("Error", "Invalid credentials!");
 			});
 	};
 

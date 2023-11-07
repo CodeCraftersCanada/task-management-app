@@ -28,22 +28,24 @@ const MainContainer = ({ navigation }) => {
 				navigation.getState().routes[navigation.getState().index].name;
 			let headerTitle = "";
 
-			const routeIndex = navigation.getState().routes[0].state.index;
-			switch (routeIndex) {
-				case 0:
-					headerTitle = "Home";
-					break;
-				case 1:
-					headerTitle = "Billing";
-					break;
-				case 2:
-					headerTitle = "New Task";
-					break;
-				case 3:
-					headerTitle = "Members";
-					break;
-				default:
-					headerTitle = "Main";
+			if (navigation.getState().routes[0].state) {
+				const routeIndex = navigation.getState().routes[0].state.index;
+				switch (routeIndex) {
+					case 0:
+						headerTitle = "Home";
+						break;
+					case 1:
+						headerTitle = "Billing";
+						break;
+					case 2:
+						headerTitle = "New Task";
+						break;
+					case 3:
+						headerTitle = "Members";
+						break;
+					default:
+						headerTitle = "Home";
+				}
 			}
 			setHeaderTitle(headerTitle);
 		}, [navigation, setHeaderTitle])

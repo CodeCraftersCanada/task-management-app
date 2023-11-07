@@ -7,44 +7,65 @@ import Register from "../features/authentication/Register";
 import SettingScreen from "../navigation/screens/SettingScreen";
 import TaskList from "./TaskList";
 import TaskDetail from "./TaskDetail";
+import HeaderTitleContext from "../context/HeaderTitleContext";
+import { useSetHeaderTitle } from "../context/HeaderTitleContext";
 
 const Stack = createStackNavigator();
 
 const AppContainer = () => {
 	const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+	const [headerTitle, setHeaderTitle] = React.useState("Home");
 
 	return (
-		<Stack.Navigator
-			screenOptions={{
-				headerShown: true,
-				headerStyle: {
-					backgroundColor: "#212832",
-				},
-				headerTintColor: "#FFF",
-			}}
-		>
-			{isLoggedIn ? (
-				<>
-					<Stack.Screen name="Home" component={MainContainer} />
-					<Stack.Screen name="Setting" component={SettingScreen} />
-					<Stack.Screen name="Tasks" component={TaskList} />
-					<Stack.Screen name="Task Detail" component={TaskDetail} />
-				</>
-			) : (
-				<>
-					<Stack.Screen
-						name="Login"
-						component={Login}
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="Register"
-						component={Register}
-						options={{ headerShown: false }}
-					/>
-				</>
-			)}
-		</Stack.Navigator>
+		<HeaderTitleContext.Provider value={setHeaderTitle}>
+			<Stack.Navigator
+				screenOptions={{
+					headerShown: true,
+					headerStyle: {
+						backgroundColor: "#212832",
+					},
+					headerTintColor: "#FFF",
+					headerTitle: headerTitle,
+				}}
+			>
+				{isLoggedIn ? (
+					<>
+						<Stack.Screen name="Main">
+							{(props) => <MainContainer {...props} />}
+						</Stack.Screen>
+
+						<Stack.Screen
+							name="Setting"
+							component={SettingScreen}
+							options={{ headerBackTitle: "Back" }}
+						/>
+						<Stack.Screen
+							name="Tasks"
+							component={TaskList}
+							options={{ headerBackTitle: "Back" }}
+						/>
+						<Stack.Screen
+							name="Task Detail"
+							component={TaskDetail}
+							options={{ headerBackTitle: "Back" }}
+						/>
+					</>
+				) : (
+					<>
+						<Stack.Screen
+							name="Login"
+							component={Login}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="Register"
+							component={Register}
+							options={{ headerShown: false }}
+						/>
+					</>
+				)}
+			</Stack.Navigator>
+		</HeaderTitleContext.Provider>
 	);
 };
 

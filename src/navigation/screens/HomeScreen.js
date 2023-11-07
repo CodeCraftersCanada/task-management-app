@@ -1,9 +1,20 @@
-import * as React from "react";
-import { StyleSheet, View, Text, SafeAreaView } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { useSetHeaderTitle } from "../../context/HeaderTitleContext";
 
 import Home from "../../pages/Home";
 
 const HomeScreen = ({ navigation }) => {
+	const setHeaderTitle = useSetHeaderTitle();
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener("focus", () => {
+			setHeaderTitle("Home");
+		});
+
+		return unsubscribe;
+	}, [navigation, setHeaderTitle]);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<Home navigation={navigation} />

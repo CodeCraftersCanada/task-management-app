@@ -1,14 +1,16 @@
-import * as React from "react";
+import React, { useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, Text } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import HomeScreen from "./screens/HomeScreen";
-import TaskListScreen from "./screens/TaskListScreen";
 import MemberScreen from "./screens/MemberScreen";
 import BillingScreen from "./screens/BillingScreen";
 import NewTaskScreen from "./screens/NewTaskScreen";
+
+import { useSetHeaderTitle } from "../context/HeaderTitleContext";
 
 const homeName = "Home";
 const memberName = "Members";
@@ -17,10 +19,39 @@ const newTaskName = "New Task";
 
 const Tab = createBottomTabNavigator();
 
-const MainContainer = () => {
+const MainContainer = ({ navigation }) => {
+	const setHeaderTitle = useSetHeaderTitle();
+
+	useEffect(
+		React.useCallback(() => {
+			const routeName =
+				navigation.getState().routes[navigation.getState().index].name;
+			let headerTitle = "";
+
+			const routeIndex = navigation.getState().routes[0].state.index;
+			switch (routeIndex) {
+				case 0:
+					headerTitle = "Home";
+					break;
+				case 1:
+					headerTitle = "Billing";
+					break;
+				case 2:
+					headerTitle = "New Task";
+					break;
+				case 3:
+					headerTitle = "Members";
+					break;
+				default:
+					headerTitle = "Main";
+			}
+			setHeaderTitle(headerTitle);
+		}, [navigation, setHeaderTitle])
+	);
+
 	return (
 		<Tab.Navigator
-			initialRouteName="{homeName}"
+			initialRouteName={homeName}
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;

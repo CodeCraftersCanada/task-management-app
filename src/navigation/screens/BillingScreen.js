@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useSetHeaderTitle } from "../../context/HeaderTitleContext";
 
+import Billing from "../../pages/Billing";
+
 const BillingScreen = ({ navigation }) => {
 	const setHeaderTitle = useSetHeaderTitle();
 
@@ -15,7 +17,7 @@ const BillingScreen = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text>BillingScreen</Text>
+			<Billing />
 		</View>
 	);
 };

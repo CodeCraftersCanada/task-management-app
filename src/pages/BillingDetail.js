@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import {
 	StyleSheet,
 	View,
@@ -6,12 +6,18 @@ import {
 	SafeAreaView,
 	Image,
 	TouchableOpacity,
+	TextInput,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 
 const BillingDetail = ({ route, navigation }) => {
-	const { status } = route.params || { status: "completed" };
+	const [formData, setFormData] = useState({
+		title: "",
+		description: "",
+		start_date: "",
+		end_date: "",
+	});
 
 	const handleSubmit = () => {
 		console.log("handleSubmit");
@@ -25,7 +31,15 @@ const BillingDetail = ({ route, navigation }) => {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.row}>
-					<Text style={styles.taskTitle}>Wireframe</Text>
+					<Text style={styles.fieldLabel}>Task Title</Text>
+				</View>
+				<View style={styles.row}>
+					<TextInput
+						style={styles.input}
+						placeholderTextColor="#6F8793"
+						onChangeText={(value) => handleInputChange("title", value)}
+						value={formData.title}
+					/>
 				</View>
 			</View>
 			<View style={styles.fixedButtonContainer}>
@@ -52,91 +66,26 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		marginBottom: 10,
 	},
-	taskTitle: {
-		fontWeight: "600",
-		fontSize: 21,
-		color: "#FFF",
-	},
-	smallLabel: {
-		fontWeight: "500",
-		fontSize: 11,
-		color: "#8CAAB9",
-	},
-	mediumLabel: {
-		fontWeight: "600",
-		fontSize: 17,
-		color: "#FFF",
-	},
-	columnLeft: {
-		width: "50%",
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-	},
-	columnRight: {
-		width: "50%",
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
-	},
-	columnLeft20: {
-		width: "35%",
-		justifyContent: "center",
-		alignItems: "flex-start",
-	},
-	columnRight80: {
-		width: "65%",
-		justifyContent: "center",
-		alignItems: "flex-start",
-	},
-	columnIcon: {
-		backgroundColor: "#FED36A",
-		width: 47,
-		height: 47,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	image: {
-		width: 20,
-		height: 20,
-	},
-	taskDescription: {
-		fontWeight: "500",
-		fontSize: 18,
-		color: "#FFF",
-	},
-	taskDescriptionContent: {
+	fieldLabel: {
+		alignSelf: "flex-start",
+		color: "white",
+		fontSize: 16,
 		fontWeight: "400",
-		fontSize: 12,
-		color: "#BCCFD8",
+		marginTop: 10,
+		marginBottom: 5,
 	},
-	columnLeftProgress: {
-		justifyContent: "center",
-		alignItems: "flex-start",
-	},
-	columnRightProgress: {
-		justifyContent: "center",
-		alignItems: "flex-end",
-	},
-	card: {
-		flexDirection: "row",
-		justifyContent: "space-between",
+	input: {
+		height: 50,
+		borderColor: "gray",
+		borderWidth: 0,
+		marginBottom: 12,
+		paddingHorizontal: 12,
+		paddingVertical: 12,
+		width: "100%",
 		backgroundColor: "#455A64",
-		padding: 10,
-	},
-	cardLeft: {
-		justifyContent: "center",
-		alignItems: "flex-start",
-		width: "70%",
-	},
-	cardRight: {
-		justifyContent: "center",
-		alignItems: "flex-end",
-		width: "30%",
-	},
-	cardRightIcon: {
-		backgroundColor: "#FED36A",
-		padding: 5,
+		color: "#FFFFFF",
+		fontSize: 18,
 	},
 	fixedButtonContainer: {
 		position: "absolute",

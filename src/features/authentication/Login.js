@@ -26,7 +26,7 @@ const Login = () => {
 				if (response.data && response.data.status) {
 					Alert.alert("Success", response.data.message);
 					try {
-						dispatch(login(response.data.token));
+						dispatch(login(response.data));
 					} catch (error) {
 						console.log("Dispatch error: ", error);
 					}

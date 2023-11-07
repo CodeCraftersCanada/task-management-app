@@ -6,14 +6,21 @@ import {
 	SafeAreaView,
 	TextInput,
 	Image,
+	TouchableOpacity,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 const Billing = () => {
 	const [search, setSearch] = useState("");
+	const navigation = useNavigation();
 
 	const handleSearchChange = () => {
 		console.log("search");
+	};
+
+	const handlePress = () => {
+		navigation.navigate("Billing Detail");
 	};
 
 	return (
@@ -42,37 +49,41 @@ const Billing = () => {
 					</View>
 				</View>
 
-				<View style={[styles.row, styles.card]}>
-					<View style={styles.columnLeft}>
-						<Text style={styles.nameLabel}>Wireframe</Text>
-						<Text style={styles.hourLabel}>03:30:00</Text>
+				<TouchableOpacity onPress={handlePress}>
+					<View style={[styles.row, styles.card]}>
+						<View style={styles.columnLeft}>
+							<Text style={styles.nameLabel}>Wireframe</Text>
+							<Text style={styles.hourLabel}>03:30:00</Text>
+						</View>
+						<View style={styles.columnRight}>
+							<Text style={styles.dollarLabel}>$160.50</Text>
+						</View>
+						<View style={styles.columnEnd}>
+							<Image
+								style={styles.image}
+								source={require("../assets/img/dummy.png")}
+							/>
+						</View>
 					</View>
-					<View style={styles.columnRight}>
-						<Text style={styles.dollarLabel}>$160.50</Text>
-					</View>
-					<View style={styles.columnEnd}>
-						<Image
-							style={styles.image}
-							source={require("../assets/img/dummy.png")}
-						/>
-					</View>
-				</View>
+				</TouchableOpacity>
 
-				<View style={[styles.row, styles.card]}>
-					<View style={styles.columnLeft}>
-						<Text style={styles.nameLabel}>Icons</Text>
-						<Text style={styles.hourLabel}>01:30:00</Text>
+				<TouchableOpacity onPress={handlePress}>
+					<View style={[styles.row, styles.card]}>
+						<View style={styles.columnLeft}>
+							<Text style={styles.nameLabel}>Icons</Text>
+							<Text style={styles.hourLabel}>01:30:00</Text>
+						</View>
+						<View style={styles.columnRight}>
+							<Text style={styles.dollarLabel}>$80</Text>
+						</View>
+						<View style={styles.columnEnd}>
+							<Image
+								style={styles.image}
+								source={require("../assets/img/dummy1.png")}
+							/>
+						</View>
 					</View>
-					<View style={styles.columnRight}>
-						<Text style={styles.dollarLabel}>$80</Text>
-					</View>
-					<View style={styles.columnEnd}>
-						<Image
-							style={styles.image}
-							source={require("../assets/img/dummy1.png")}
-						/>
-					</View>
-				</View>
+				</TouchableOpacity>
 			</View>
 		</SafeAreaView>
 	);

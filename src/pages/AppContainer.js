@@ -7,6 +7,7 @@ import Register from "../features/authentication/Register";
 import SettingScreen from "../navigation/screens/SettingScreen";
 import TaskList from "./TaskList";
 import TaskDetail from "./TaskDetail";
+import BillingDetail from "./BillingDetail";
 import HeaderTitleContext from "../context/HeaderTitleContext";
 import { useSetHeaderTitle } from "../context/HeaderTitleContext";
 
@@ -45,6 +46,11 @@ const AppContainer = () => {
 						<Stack.Screen
 							name="Task Detail"
 							component={TaskDetail}
+							options={{ headerBackTitle: "Back" }}
+						/>
+						<Stack.Screen
+							name="Billing Detail"
+							component={BillingDetail}
 							options={{ headerBackTitle: "Back" }}
 						/>
 					</>

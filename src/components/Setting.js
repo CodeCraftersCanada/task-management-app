@@ -136,7 +136,11 @@ const styles = StyleSheet.create({
 		width: "36.8%",
 		alignSelf: "center",
 	},
-	image: {},
+	image: {
+		borderRadius: 100,
+		width: 127,
+		height: 125,
+	},
 	imageAddWrapper: {
 		position: "absolute",
 		bottom: 0,

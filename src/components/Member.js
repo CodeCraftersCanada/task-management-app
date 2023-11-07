@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
 	image: {
 		width: 47,
 		height: 47,
+		borderRadius: 100,
 	},
 	nameLabel: {
 		fontSize: 14,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import {
 	StyleSheet,
 	View,
@@ -18,6 +18,10 @@ const TaskList = ({ route, navigation }) => {
 	const handleSearchChange = () => {
 		console.log("search");
 	};
+
+	useLayoutEffect(() => {
+		navigation.setOptions({ headerTitle: "Tasks" });
+	}, [navigation]);
 
 	return (
 		<SafeAreaView>

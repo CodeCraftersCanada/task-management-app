@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainContainer from "../navigation/MainContainer";
@@ -14,20 +14,18 @@ const Stack = createStackNavigator();
 
 const AppContainer = () => {
 	const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-	const [headerTitle, setHeaderTitle] = React.useState("Home");
-
+	const [headerTitle, setHeaderTitle] = useState("Home");
+	const screenOptions = () => ({
+		headerShown: true,
+		headerStyle: {
+			backgroundColor: "#212832",
+		},
+		headerTintColor: "#FFF",
+		headerTitle: headerTitle,
+	});
 	return (
-		<HeaderTitleContext.Provider value={setHeaderTitle}>
-			<Stack.Navigator
-				screenOptions={{
-					headerShown: true,
-					headerStyle: {
-						backgroundColor: "#212832",
-					},
-					headerTintColor: "#FFF",
-					headerTitle: headerTitle,
-				}}
-			>
+		<HeaderTitleContext.Provider value={{ headerTitle, setHeaderTitle }}>
+			<Stack.Navigator screenOptions={screenOptions}>
 				{isLoggedIn ? (
 					<>
 						<Stack.Screen name="Main">

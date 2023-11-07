@@ -1,15 +1,18 @@
 import React from "react";
 
-const HeaderTitleContext = React.createContext(null);
+const HeaderTitleContext = React.createContext({
+	headerTitle: "Home",
+	setHeaderTitle: () => {},
+});
 
 export const useSetHeaderTitle = () => {
-	const setTitle = React.useContext(HeaderTitleContext);
-	if (!setTitle) {
+	const context = React.useContext(HeaderTitleContext);
+	if (!context) {
 		throw new Error(
 			"useSetHeaderTitle must be used within a HeaderTitleProvider"
 		);
 	}
-	return setTitle;
+	return context.setHeaderTitle;
 };
 
 export default HeaderTitleContext;

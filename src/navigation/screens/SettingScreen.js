@@ -1,9 +1,13 @@
-import * as React from "react";
+import React, { useEffect, useContext, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, SafeAreaView } from "react-native";
 
 import Setting from "../../components/Setting";
 
 const SettingScreen = ({ navigation }) => {
+	useLayoutEffect(() => {
+		navigation.setOptions({ headerTitle: "Setting" });
+	}, [navigation]);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<Setting></Setting>

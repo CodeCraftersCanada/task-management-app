@@ -1,10 +1,21 @@
 import React, { useEffect, useContext, useLayoutEffect } from "react";
-import { StyleSheet, View, Text, SafeAreaView, Image } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	SafeAreaView,
+	Image,
+	TouchableOpacity,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 
 const TaskDetail = ({ route, navigation }) => {
 	const { status } = route.params || { status: "completed" };
+
+	const handleAdd = () => {
+		console.log("handleAdd");
+	};
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
@@ -43,6 +54,38 @@ const TaskDetail = ({ route, navigation }) => {
 									style={styles.image}
 									source={require("../assets/img/dummy.png")}
 								/>
+							</View>
+						</View>
+					</View>
+				</View>
+				<View style={styles.row}>
+					<View style={styles.columnLeft}>
+						<View style={styles.row}>
+							<View style={[styles.columnLeft, styles.columnLeft20]}>
+								<View style={styles.columnIcon}>
+									<Ionicons
+										name={"hourglass-outline"}
+										size={28}
+										color={"#263238"}
+									/>
+								</View>
+							</View>
+							<View style={[styles.columnRight, styles.columnRight80]}>
+								<Text style={styles.smallLabel}>Total Hours</Text>
+								<Text style={styles.mediumLabel}>04:30:00</Text>
+							</View>
+						</View>
+					</View>
+					<View style={styles.columnRight}>
+						<View style={styles.row}>
+							<View style={[styles.columnLeft, styles.columnLeft20]}>
+								<View style={styles.columnIcon}>
+									<Ionicons name={"cash-outline"} size={28} color={"#263238"} />
+								</View>
+							</View>
+							<View style={[styles.columnRight, styles.columnRight80]}>
+								<Text style={styles.smallLabel}>Total Cost</Text>
+								<Text style={styles.mediumLabel}>$340.00</Text>
 							</View>
 						</View>
 					</View>
@@ -114,7 +157,11 @@ const TaskDetail = ({ route, navigation }) => {
 					</View>
 				</View>
 			</View>
-			<View style={styles.row}></View>
+			<View style={styles.fixedButtonContainer}>
+				<TouchableOpacity style={styles.fixedButton} onPress={handleAdd}>
+					<Text style={styles.fixedButtonText}>Add Task</Text>
+				</TouchableOpacity>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -219,6 +266,23 @@ const styles = StyleSheet.create({
 	cardRightIcon: {
 		backgroundColor: "#FED36A",
 		padding: 5,
+	},
+	fixedButtonContainer: {
+		position: "absolute",
+		bottom: 30,
+		left: 10,
+		right: 10,
+	},
+	fixedButton: {
+		backgroundColor: "#FED36A",
+		padding: 15,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	fixedButtonText: {
+		color: "#000",
+		fontSize: 18,
+		fontWeight: "600",
 	},
 });
 

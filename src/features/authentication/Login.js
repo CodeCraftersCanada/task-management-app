@@ -8,6 +8,7 @@ import {
 	Image,
 	Text,
 	TouchableOpacity,
+	SafeAreaView
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { signIn } from "../../services/authService";
@@ -46,59 +47,66 @@ const Login = () => {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Image
-				style={styles.image}
-				source={require("../../assets/img/logo.png")}
-			/>
-			<View className="flex-row items-center justify-center">
-				<Text className="text-white text-2xl font-semibold">Twin</Text>
-				<Text className="text-primary-yellow text-2xl font-semibold">Tech</Text>
+		<SafeAreaView style={styles.container}>
+			<View style={styles.wrapper}>
+				<Image
+					style={styles.image}
+					source={require("../../assets/img/logo.png")}
+				/>
+				<View className="flex-row items-center justify-center">
+					<Text className="text-white text-2xl font-semibold">Twin</Text>
+					<Text className="text-primary-yellow text-2xl font-semibold">Tech</Text>
+				</View>
+				<Text style={styles.welcomeText}>Welcome Back!</Text>
+				<TextInput
+					style={styles.input}
+					placeholder="Email Address"
+					placeholderTextColor="white"
+					onChangeText={setEmail}
+					value={email}
+					name="email"
+				/>
+				<TextInput
+					style={styles.input}
+					placeholder="Password"
+					placeholderTextColor="white"
+					secureTextEntry
+					onChangeText={setPassword}
+					value={password}
+					name="password"
+				/>
+				<TouchableOpacity style={styles.button} onPress={handleLogin}>
+					<Text className="text-xl font-semibold">Login</Text>
+				</TouchableOpacity>
+				<View className="flex-row items-center justify-center mt-4">
+					<Text className="text-primary-gray text-base font-semibold">
+						Don’t have an account?
+					</Text>
+					<Text
+						className="text-primary-yellow text-base font-semibold ml-2"
+						onPress={handleSignUp}
+					>
+						Sign Up
+					</Text>
+				</View>
 			</View>
-			<Text style={styles.welcomeText}>Welcome Back!</Text>
-			<TextInput
-				style={styles.input}
-				placeholder="Email Address"
-				placeholderTextColor="white"
-				onChangeText={setEmail}
-				value={email}
-				name="email"
-			/>
-			<TextInput
-				style={styles.input}
-				placeholder="Password"
-				placeholderTextColor="white"
-				secureTextEntry
-				onChangeText={setPassword}
-				value={password}
-				name="password"
-			/>
-			<TouchableOpacity style={styles.button} onPress={handleLogin}>
-				<Text className="text-xl font-semibold">Login</Text>
-			</TouchableOpacity>
-			<View className="flex-row items-center justify-center mt-4">
-				<Text className="text-primary-gray text-base font-semibold">
-					Don’t have an account?
-				</Text>
-				<Text
-					className="text-primary-yellow text-base font-semibold ml-2"
-					onPress={handleSignUp}
-				>
-					Sign Up
-				</Text>
-			</View>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: "flex-start",
-		paddingHorizontal: 16,
 		backgroundColor: "#212832",
+		width: "100%",
+		height: "100%",
+		padding: 10,
+		paddingTop: 20,
+	},
+	wrapper: {
+		paddingHorizontal: 10,
+		paddingVertical: 20,
+		justifyContent: "center",
 		alignItems: "center",
-		paddingTop: 120,
 	},
 	input: {
 		height: 50,

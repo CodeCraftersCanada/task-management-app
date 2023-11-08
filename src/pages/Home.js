@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
 	StyleSheet,
@@ -28,33 +28,38 @@ const Home = ({ navigation }) => {
 	const [ongoingTasks, setOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
-	getTasks(token, 3, userInfo.user_type_id, userInfo.id)
-		.then((response) => {
-			if (response.data && response.data.status) {
-				try {
-					setCompletedTasks(response.data.tasks);
-				} catch (error) {
-					console.log("Dispatch error: ", error);
+	useEffect(() => {
+		const fetchTasks = async () => {
+			try {
+				const completedTasksResponse = await getTasks(
+					token,
+					3,
+					userInfo.user_type_id,
+					userInfo.id
+				);
+				if (completedTasksResponse.data && completedTasksResponse.data.status) {
+					setCompletedTasks(completedTasksResponse.data.tasks);
 				}
-			}
-		})
-		.catch((error) => {
-			//Alert.alert("Error", "Invalid credentials!");
-		});
 
-	getTasks(token, 2, userInfo.user_type_id, userInfo.id)
-		.then((response) => {
-			if (response.data && response.data.status) {
-				try {
-					setOngoingTasks(response.data.tasks);
-				} catch (error) {
-					console.log("Dispatch error: ", error);
+				const ongoingTasksResponse = await getTasks(
+					token,
+					2,
+					userInfo.user_type_id,
+					userInfo.id
+				);
+				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
+					setOngoingTasks(ongoingTasksResponse.data.tasks);
 				}
+			} catch (error) {
+				console.log("Error fetching tasks: ", error);
+				// You can handle errors by setting some state and showing it in the UI if needed
 			}
-		})
-		.catch((error) => {
-			//Alert.alert("Error", "Invalid credentials!");
-		});
+		};
+
+		fetchTasks();
+	}, [token, userInfo.user_type_id, userInfo.id]);
+
+	console.log("LOG11 ", completedTasks);
 
 	const handleSearchChange = () => {
 		console.log("search");

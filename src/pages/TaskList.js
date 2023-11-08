@@ -1,4 +1,5 @@
 import React, { useState, useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -10,17 +11,41 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import CardComplete from "../components/CardComplete";
 import CardInprogress from "../components/CardInprogress";
+import { getTasks } from "../services/homeService";
 
 const TaskList = ({ route, navigation }) => {
-	const { status } = route.params || { status: "completed" };
+	const userInfo = useSelector((state) => state.auth.user);
+	const token = useSelector((state) => state.auth.token);
+	const [tasks, setTasks] = useState([]);
+	const { status } = route.params || { status: 3 };
 	const [search, setSearch] = useState("");
+
+	getTasks(token, status, userInfo.user_type_id, userInfo.id)
+		.then((response) => {
+			if (response.data && response.data.status) {
+				try {
+					setTasks(response.data.tasks);
+				} catch (error) {
+					console.log("Dispatch error: ", error);
+				}
+			}
+		})
+		.catch((error) => {
+			//Alert.alert("Error", "Invalid credentials!");
+		});
 
 	const handleSearchChange = () => {
 		console.log("search");
 	};
 
 	useLayoutEffect(() => {
-		navigation.setOptions({ headerTitle: "Tasks" });
+		if (status == 3) {
+			navigation.setOptions({ headerTitle: "Completed Tasks" });
+		} else if (status == 2) {
+			navigation.setOptions({ headerTitle: "Ongoing Tasks" });
+		} else {
+			navigation.setOptions({ headerTitle: "Tasks" });
+		}
 	}, [navigation]);
 
 	return (
@@ -53,35 +78,25 @@ const TaskList = ({ route, navigation }) => {
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={styles.scrollViewContainer}
 				>
-					{status == "completed" ? (
+					{status == 3 ? (
 						<>
-							<View style={styles.card}>
-								<CardComplete active={true} navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardComplete navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardComplete active={true} navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardComplete navigation={navigation} />
-							</View>
+							{tasks.map((task, index) => (
+								<View style={styles.card} key={task.id}>
+									<CardComplete
+										active={index === 0}
+										task={task}
+										navigation={navigation}
+									/>
+								</View>
+							))}
 						</>
 					) : (
 						<>
-							<View style={styles.card}>
-								<CardInprogress active={true} navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardInprogress navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardInprogress active={true} navigation={navigation} />
-							</View>
-							<View style={styles.card}>
-								<CardInprogress navigation={navigation} />
-							</View>
+							{tasks.map((task, index) => (
+								<View style={styles.card} key={task.id}>
+									<CardInprogress active={true} navigation={navigation} />
+								</View>
+							))}
 						</>
 					)}
 				</ScrollView>

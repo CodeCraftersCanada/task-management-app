@@ -35,12 +35,13 @@ const Setting = () => {
 	};
 
 	const handleSubmit = () => {
+		console.log("handleSubmit ");
 		updateUser(formData, token)
 			.then((response) => {
 				if (response.data && response.data.status) {
 					Alert.alert("Success", response.data.message);
 					try {
-						dispatch(login(response.data));
+						//dispatch(login(response.data));
 					} catch (error) {
 						console.log("Dispatch error: ", error);
 					}

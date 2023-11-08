@@ -107,9 +107,7 @@ const Home = ({ navigation }) => {
 				</View>
 				<View style={styles.columnButton}>
 					<TouchableOpacity
-						onPress={() =>
-							navigation.navigate("Tasks", { status: "completed" })
-						}
+						onPress={() => navigation.navigate("Tasks", { status: 3 })}
 					>
 						<Text style={styles.mediumLabel}>See all</Text>
 					</TouchableOpacity>
@@ -138,7 +136,7 @@ const Home = ({ navigation }) => {
 				</View>
 				<View style={styles.columnButton}>
 					<TouchableOpacity
-						onPress={() => navigation.navigate("Tasks", { status: "ongoing" })}
+						onPress={() => navigation.navigate("Tasks", { status: 2 })}
 					>
 						<Text style={styles.mediumLabel}>See all</Text>
 					</TouchableOpacity>

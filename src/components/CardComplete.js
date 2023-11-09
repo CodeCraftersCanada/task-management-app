@@ -41,7 +41,6 @@ const CardComplete = ({ active, task, navigation }) => {
 								!active && styles.colorWhite,
 							]}
 						>
-							{/* 04:30:00 */}
 							{task.task_hours}
 						</Text>
 					</View>
@@ -60,7 +59,7 @@ const CardComplete = ({ active, task, navigation }) => {
 								!active && styles.colorWhite,
 							]}
 						>
-							{/* $40.00 */}${task.task_hours * task.assigned.hourly_rate}
+							${task.task_hours * task.assigned.hourly_rate}
 						</Text>
 					</View>
 				</View>

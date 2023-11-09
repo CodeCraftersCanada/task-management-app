@@ -21,11 +21,13 @@ import { getTasks } from "../services/homeService";
 
 const { width } = Dimensions.get("window");
 
-const Home = ({ navigation }) => {
+const Home = React.memo(({ navigation }) => {
 	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
 	const [completedTasks, setCompletedTasks] = useState([]);
 	const [ongoingTasks, setOngoingTasks] = useState([]);
+	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
+	const [filteredOngoingTasks, setFilteredOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
@@ -39,6 +41,7 @@ const Home = ({ navigation }) => {
 				);
 				if (completedTasksResponse.data && completedTasksResponse.data.status) {
 					setCompletedTasks(completedTasksResponse.data.tasks);
+					setFilteredCompletedTasks(completedTasksResponse.data.tasks);
 				}
 
 				const ongoingTasksResponse = await getTasks(
@@ -49,6 +52,7 @@ const Home = ({ navigation }) => {
 				);
 				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
 					setOngoingTasks(ongoingTasksResponse.data.tasks);
+					setFilteredOngoingTasks(ongoingTasksResponse.data.tasks);
 				}
 			} catch (error) {
 				console.log("Error fetching tasks: ", error);
@@ -59,13 +63,26 @@ const Home = ({ navigation }) => {
 		fetchTasks();
 	}, [token, userInfo.user_type_id, userInfo.id]);
 
-	console.log("LOG11 ", completedTasks);
+	// useEffect(() => {
+	// 	const results = [...completedTasks, ...ongoingTasks].filter((task) => {
+	// 		return task.title.includes(search);
+	// 	});
+
+	// 	setFilteredCompletedTasks(
+	// 		results.filter((task) => task.task_status_id === 3)
+	// 	);
+	// 	setFilteredOngoingTasks(
+	// 		results.filter((task) => task.task_status_id === 2)
+	// 	);
+	// }, [search]);
 
 	const handleSearchChange = () => {
 		console.log("search");
 	};
 
-	const renderItem = ({ item }) => <CardInprogress navigation={navigation} />;
+	const renderItem = ({ item }) => (
+		<CardInprogress task={item} navigation={navigation} />
+	);
 
 	return (
 		<View style={styles.container}>
@@ -124,7 +141,7 @@ const Home = ({ navigation }) => {
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={styles.scrollViewContainer}
 			>
-				{completedTasks.map((task, index) => (
+				{filteredCompletedTasks.map((task, index) => (
 					<View style={styles.card} key={task.id}>
 						<CardComplete
 							active={index === 0}
@@ -150,7 +167,7 @@ const Home = ({ navigation }) => {
 
 			<View>
 				<FlatList
-					data={ongoingTasks}
+					data={filteredOngoingTasks}
 					renderItem={renderItem}
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ paddingBottom: 20 }}
@@ -158,7 +175,7 @@ const Home = ({ navigation }) => {
 			</View>
 		</View>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	scrollViewContainer: {

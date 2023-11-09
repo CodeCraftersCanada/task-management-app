@@ -1,8 +1,10 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";
+import images from "../utils/imageAssets";
+import { formatDate } from "../utils/formatDate";
 
-const CardInprogress = ({ active, navigation }) => {
+const CardInprogress = ({ task, navigation }) => {
 	const handlePress = () => {
 		navigation.navigate("Task Detail");
 	};
@@ -23,29 +25,32 @@ const CardInprogress = ({ active, navigation }) => {
 						<View style={styles.row}>
 							<Image
 								style={styles.image}
-								source={require("../assets/img/dummy.png")}
+								source={images[task.assigned.filename]}
 							/>
 						</View>
 						<View style={styles.row}>
 							<Text style={[styles.cardSmallText, styles.colorWhite]}>
-								Due on : 21 November
+								Due on : {formatDate(task.end_date)}
 							</Text>
 						</View>
 						<View style={styles.row}>
 							<Text style={[styles.cardSmallText, styles.colorWhite]}>
-								Total Hours : 04:30:00
+								Total Hours : {task.task_hours}
 							</Text>
 						</View>
 						<View style={styles.row}>
 							<Text style={[styles.cardSmallText, styles.colorWhite]}>
-								Total Cost : $40.00
+								Total Cost : ${task.task_hours * task.assigned.hourly_rate}
 							</Text>
 						</View>
 					</View>
 					<View style={[styles.columnRight]}>
 						<Progress.Circle
 							size={90}
-							progress={0.75}
+							progress={
+								task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+									.length / task.sub_tasks.length
+							}
 							showsText={true}
 							thickness={3}
 							color={"#FED36A"}

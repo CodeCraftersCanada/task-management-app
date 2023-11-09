@@ -26,6 +26,8 @@ const Home = React.memo(({ navigation }) => {
 	const token = useSelector((state) => state.auth.token);
 	const [completedTasks, setCompletedTasks] = useState([]);
 	const [ongoingTasks, setOngoingTasks] = useState([]);
+	const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
+	const [filteredOngoingTasks, setFilteredOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
@@ -39,6 +41,7 @@ const Home = React.memo(({ navigation }) => {
 				);
 				if (completedTasksResponse.data && completedTasksResponse.data.status) {
 					setCompletedTasks(completedTasksResponse.data.tasks);
+					setFilteredCompletedTasks(completedTasksResponse.data.tasks);
 				}
 
 				const ongoingTasksResponse = await getTasks(
@@ -49,6 +52,7 @@ const Home = React.memo(({ navigation }) => {
 				);
 				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
 					setOngoingTasks(ongoingTasksResponse.data.tasks);
+					setFilteredOngoingTasks(ongoingTasksResponse.data.tasks);
 				}
 			} catch (error) {
 				console.log("Error fetching tasks: ", error);
@@ -59,7 +63,18 @@ const Home = React.memo(({ navigation }) => {
 		fetchTasks();
 	}, [token, userInfo.user_type_id, userInfo.id]);
 
-	console.log("LOG11 ", completedTasks);
+	// useEffect(() => {
+	// 	const results = [...completedTasks, ...ongoingTasks].filter((task) => {
+	// 		return task.title.includes(search);
+	// 	});
+
+	// 	setFilteredCompletedTasks(
+	// 		results.filter((task) => task.task_status_id === 3)
+	// 	);
+	// 	setFilteredOngoingTasks(
+	// 		results.filter((task) => task.task_status_id === 2)
+	// 	);
+	// }, [search]);
 
 	const handleSearchChange = () => {
 		console.log("search");
@@ -126,7 +141,7 @@ const Home = React.memo(({ navigation }) => {
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={styles.scrollViewContainer}
 			>
-				{completedTasks.map((task, index) => (
+				{filteredCompletedTasks.map((task, index) => (
 					<View style={styles.card} key={task.id}>
 						<CardComplete
 							active={index === 0}
@@ -152,7 +167,7 @@ const Home = React.memo(({ navigation }) => {
 
 			<View>
 				<FlatList
-					data={ongoingTasks}
+					data={filteredOngoingTasks}
 					renderItem={renderItem}
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ paddingBottom: 20 }}

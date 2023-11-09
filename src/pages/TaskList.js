@@ -94,7 +94,11 @@ const TaskList = ({ route, navigation }) => {
 						<>
 							{tasks.map((task, index) => (
 								<View style={styles.card} key={task.id}>
-									<CardInprogress active={true} navigation={navigation} />
+									<CardInprogress
+										active={true}
+										task={task}
+										navigation={navigation}
+									/>
 								</View>
 							))}
 						</>

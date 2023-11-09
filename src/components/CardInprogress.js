@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";
 import images from "../utils/imageAssets";
@@ -47,7 +47,10 @@ const CardInprogress = ({ task, navigation }) => {
 					<View style={[styles.columnRight]}>
 						<Progress.Circle
 							size={90}
-							progress={0.75}
+							progress={
+								task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+									.length / task.sub_tasks.length
+							}
 							showsText={true}
 							thickness={3}
 							color={"#FED36A"}

@@ -21,7 +21,7 @@ import { getTasks } from "../services/homeService";
 
 const { width } = Dimensions.get("window");
 
-const Home = ({ navigation }) => {
+const Home = React.memo(({ navigation }) => {
 	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
 	const [completedTasks, setCompletedTasks] = useState([]);
@@ -160,7 +160,7 @@ const Home = ({ navigation }) => {
 			</View>
 		</View>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	scrollViewContainer: {

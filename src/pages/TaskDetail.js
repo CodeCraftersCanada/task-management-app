@@ -6,12 +6,16 @@ import {
 	SafeAreaView,
 	Image,
 	TouchableOpacity,
+	Images,
+	ScrollView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
+import { formatDate } from "../utils/formatDate";
+import images from "../utils/imageAssets";
 
-const TaskDetail = ({ route, navigation, task }) => {
-	const { status } = route.params || { status: "completed" };
+const TaskDetail = ({ route, navigation }) => {
+	const { task } = route.params || { task: {} };
 
 	const handleAdd = () => {
 		console.log("handleAdd");
@@ -25,7 +29,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.row}>
-					<Text style={styles.taskTitle}>Real Estate App Design</Text>
+					<Text style={styles.taskTitle}>{task.title}</Text>
 				</View>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>
@@ -37,7 +41,9 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Due Date</Text>
-								<Text style={styles.mediumLabel}>20 June</Text>
+								<Text style={styles.mediumLabel}>
+									{formatDate(task.end_date)}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -52,7 +58,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 								<Text style={styles.smallLabel}>Project Team</Text>
 								<Image
 									style={styles.image}
-									source={require("../assets/img/dummy.png")}
+									source={images[task.assigned.filename]}
 								/>
 							</View>
 						</View>
@@ -72,7 +78,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Hours</Text>
-								<Text style={styles.mediumLabel}>04:30:00</Text>
+								<Text style={styles.mediumLabel}>{task.task_hours}</Text>
 							</View>
 						</View>
 					</View>
@@ -85,7 +91,9 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Cost</Text>
-								<Text style={styles.mediumLabel}>$340.00</Text>
+								<Text style={styles.mediumLabel}>
+									${task.task_hours * task.assigned.hourly_rate}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -94,12 +102,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 					<Text style={styles.taskDescription}>Task Description</Text>
 				</View>
 				<View style={styles.row}>
-					<Text style={styles.taskDescriptionContent}>
-						Lorem Ipsum is simply dummy text of the printing and typesetting
-						industry. Lorem Ipsum has been the industry's standard dummy text
-						ever since the 1500s, when an unknown printer took a galley of type
-						and scrambled
-					</Text>
+					<Text style={styles.taskDescriptionContent}>{task.description}</Text>
 				</View>
 				<View style={styles.row}>
 					<View style={[styles.columnLeft, styles.columnLeftProgress]}>
@@ -108,7 +111,10 @@ const TaskDetail = ({ route, navigation, task }) => {
 					<View style={[styles.columnRight, styles.columnRightProgress]}>
 						<Progress.Circle
 							size={90}
-							progress={0.3}
+							progress={
+								task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+									.length / task.sub_tasks.length
+							}
 							showsText={true}
 							thickness={3}
 							color={"#FED36A"}
@@ -124,44 +130,47 @@ const TaskDetail = ({ route, navigation, task }) => {
 				<View style={styles.row}>
 					<Text style={styles.taskDescription}>All Tasks</Text>
 				</View>
-				<View style={styles.row}>
-					<View style={styles.card}>
-						<View style={styles.cardLeft}>
-							<Text style={styles.taskDescription}>User Interviews</Text>
-						</View>
-						<View style={styles.cardRight}>
-							<View style={styles.cardRightIcon}>
-								<Ionicons
-									name={"ellipse-outline"}
-									size={28}
-									color={"#263238"}
-								/>
+
+				<ScrollView
+					vertical
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={styles.scrollViewContainer}
+				>
+					{task.sub_tasks.map((subtask, index) => (
+						<View style={styles.row} key={subtask.id}>
+							<View style={styles.card}>
+								<View style={styles.cardLeft}>
+									<Text style={styles.taskDescription}>{subtask.title}</Text>
+								</View>
+								<View style={styles.cardRight}>
+									<View style={styles.cardRightIcon}>
+										{subtask.task_status_id == 2 ? (
+											<Ionicons
+												name={"checkmark-circle-outline"}
+												size={28}
+												color={"#263238"}
+											/>
+										) : (
+											<Ionicons
+												name={"ellipse-outline"}
+												size={28}
+												color={"#263238"}
+											/>
+										)}
+									</View>
+								</View>
 							</View>
 						</View>
-					</View>
-				</View>
-				<View style={styles.row}>
-					<View style={styles.card}>
-						<View style={styles.cardLeft}>
-							<Text style={styles.taskDescription}>Wireframes</Text>
-						</View>
-						<View style={styles.cardRight}>
-							<View style={styles.cardRightIcon}>
-								<Ionicons
-									name={"checkmark-circle-outline"}
-									size={28}
-									color={"#263238"}
-								/>
-							</View>
-						</View>
-					</View>
-				</View>
+					))}
+				</ScrollView>
 			</View>
-			<View style={styles.fixedButtonContainer}>
-				<TouchableOpacity style={styles.fixedButton} onPress={handleAdd}>
-					<Text style={styles.fixedButtonText}>Add Task</Text>
-				</TouchableOpacity>
-			</View>
+			{task.task_status_id < 3 && (
+				<View style={styles.fixedButtonContainer}>
+					<TouchableOpacity style={styles.fixedButton} onPress={handleAdd}>
+						<Text style={styles.fixedButtonText}>Add Task</Text>
+					</TouchableOpacity>
+				</View>
+			)}
 		</SafeAreaView>
 	);
 };

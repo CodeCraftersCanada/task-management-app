@@ -5,12 +5,12 @@ import images from "../utils/imageAssets";
 import { formatDate } from "../utils/formatDate";
 
 const CardInprogress = ({ task, navigation }) => {
-	const handlePress = () => {
-		navigation.navigate("Task Detail");
+	const handlePress = (task) => {
+		navigation.navigate("Task Detail", { task: task });
 	};
 
 	return (
-		<TouchableOpacity onPress={handlePress}>
+		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer]}>
 				<Text style={[styles.cardLargeText, styles.colorWhite]}>
 					Mobile App Wireframe

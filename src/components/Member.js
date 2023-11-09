@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -6,11 +8,57 @@ import {
 	SafeAreaView,
 	TextInput,
 	Image,
+	FlatList
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { getUsers } from "../services/memberService";
+import images from "../utils/imageAssets";
 
 const Member = () => {
 	const [search, setSearch] = useState("");
+	const userInfo = useSelector((state) => state.auth.user);
+	const token = useSelector((state) => state.auth.token);
+	const [memberList, setMemberList] = useState([]);
+
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const userData = await getUsers(token);
+				if (userData.data && userData.data.status) {
+					setMemberList(userData.data.users);
+				}
+			} catch (error) {
+				console.log("Error fetching user list: ", error);
+				// You can handle errors by setting some state and showing it in the UI if needed
+			}
+		};
+
+		fetchUsers();
+	}, [token]);
+
+	console.log("Member List: ", memberList);
+
+	const Item = ({ item }) => (
+		<View style={styles.row}>
+			<View style={styles.columnLeft}>
+				<Image
+					style={styles.image}
+					source={images[item.filename]}
+					
+				/>
+			</View>
+			<View style={styles.columnRight}>
+				<Text style={styles.nameLabel}>{item.name}</Text>
+				<Text style={styles.hourLabel}>{item.hourly_rate} / hr</Text>
+			</View>
+			<View style={styles.columnEnd}>
+				<Text style={styles.nameLabel}>Total Earnings</Text>
+				<Text style={styles.hourLabel}>$40,000</Text>
+			</View>
+	</View>
+	);
+
+	const renderItem = ({ item }) => <Item item={item} />;
 
 	const handleSearchChange = () => {
 		console.log("search");
@@ -40,6 +88,15 @@ const Member = () => {
 					<View style={styles.filterColumn}>
 						<Ionicons name={"filter-outline"} size={24} color={"#6F8793"} />
 					</View>
+				</View>
+
+				<View>
+					<FlatList
+						data={memberList}
+						renderItem={renderItem}
+						keyExtractor={(item) => item.id}
+						contentContainerStyle={{ paddingBottom: 20 }}
+					/>
 				</View>
 
 				<View style={styles.row}>

@@ -65,7 +65,9 @@ const Home = ({ navigation }) => {
 		console.log("search");
 	};
 
-	const renderItem = ({ item }) => <CardInprogress navigation={navigation} />;
+	const renderItem = ({ item }) => (
+		<CardInprogress task={item} navigation={navigation} />
+	);
 
 	return (
 		<View style={styles.container}>

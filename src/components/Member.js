@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import {
 	StyleSheet,
@@ -17,25 +16,26 @@ import images from "../utils/imageAssets";
 const Member = () => {
 	const [search, setSearch] = useState("");
 	const token = useSelector((state) => state.auth.token);
-	const [memberList, setMemberList] = useState([]);
+	const [userList, setUserList] = useState([]);
+	const [filteredList, setFilteredList] = useState([]);
 
 	useEffect(() => {
 		const fetchUsers = async () => {
 			try {
 				const userData = await getUsers(token);
 				if (userData.data && userData.data.status) {
-					setMemberList(userData.data.users);
+					setUserList(userData.data.users);
+					setFilteredList(userData.data.users);
 				}
 			} catch (error) {
 				console.log("Error fetching user list: ", error);
-				// You can handle errors by setting some state and showing it in the UI if needed
 			}
 		};
 
 		fetchUsers();
 	}, [token]);
 
-	console.log("Member List: ", memberList);
+	console.log("Member List: ", setUserList);
 
 	const Item = ({ item }) => (
 		<View style={styles.row}>
@@ -43,7 +43,6 @@ const Member = () => {
 				<Image
 					style={styles.image}
 					source={images[item.filename]}
-					
 				/>
 			</View>
 			<View style={styles.columnRight}>
@@ -60,7 +59,19 @@ const Member = () => {
 	const renderItem = ({ item }) => <Item item={item} />;
 
 	const handleSearchChange = (searchStr) => {
-		console.log("search teaxt: ", searchStr);
+		setSearch(searchStr);
+		console.log("search text: ", searchStr);
+		const searched = searchStr.toLowerCase();
+
+		if (!searched || searched == "") {
+			setFilteredList(userList);
+		} else {
+			const newData = userList.filter((item) => {
+				return item.name.toLowerCase().search(searched) > -1;
+			});
+			console.log(newData);
+			setFilteredList(newData);
+		}
 	};
 
 	return (
@@ -77,7 +88,7 @@ const Member = () => {
 							/>
 							<TextInput
 								style={styles.input}
-								placeholder="Search tasks"
+								placeholder="Search Users"
 								placeholderTextColor="#6F8793"
 								onChangeText={(value) => handleSearchChange(value)}
 								value={search}
@@ -91,7 +102,7 @@ const Member = () => {
 
 				<View>
 					<FlatList
-						data={memberList}
+						data={filteredList}
 						renderItem={renderItem}
 						keyExtractor={(item) => item.id}
 						contentContainerStyle={{ paddingBottom: 20 }}

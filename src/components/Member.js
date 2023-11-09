@@ -60,8 +60,8 @@ const Member = () => {
 
 	const renderItem = ({ item }) => <Item item={item} />;
 
-	const handleSearchChange = () => {
-		console.log("search");
+	const handleSearchChange = (searchStr) => {
+		console.log("search teaxt: ", searchStr);
 	};
 
 	return (
@@ -80,7 +80,7 @@ const Member = () => {
 								style={styles.input}
 								placeholder="Search tasks"
 								placeholderTextColor="#6F8793"
-								onChangeText={handleSearchChange}
+								onChangeText={(value) => handleSearchChange(value)}
 								value={search}
 							/>
 						</View>
@@ -97,40 +97,6 @@ const Member = () => {
 						keyExtractor={(item) => item.id}
 						contentContainerStyle={{ paddingBottom: 20 }}
 					/>
-				</View>
-
-				<View style={styles.row}>
-					<View style={styles.columnLeft}>
-						<Image
-							style={styles.image}
-							source={require("../assets/img/dummy.png")}
-						/>
-					</View>
-					<View style={styles.columnRight}>
-						<Text style={styles.nameLabel}>John Smith</Text>
-						<Text style={styles.hourLabel}>$40 / hr</Text>
-					</View>
-					<View style={styles.columnEnd}>
-						<Text style={styles.nameLabel}>Total Earning</Text>
-						<Text style={styles.hourLabel}>$40,000</Text>
-					</View>
-				</View>
-
-				<View style={styles.row}>
-					<View style={styles.columnLeft}>
-						<Image
-							style={styles.image}
-							source={require("../assets/img/dummy1.png")}
-						/>
-					</View>
-					<View style={styles.columnRight}>
-						<Text style={styles.nameLabel}>Jane Smith</Text>
-						<Text style={styles.hourLabel}>$40 / hr</Text>
-					</View>
-					<View style={styles.columnEnd}>
-						<Text style={styles.nameLabel}>Total Earning</Text>
-						<Text style={styles.hourLabel}>$40,000</Text>
-					</View>
 				</View>
 			</View>
 		</SafeAreaView>

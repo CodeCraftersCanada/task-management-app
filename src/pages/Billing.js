@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -7,13 +8,59 @@ import {
 	TextInput,
 	Image,
 	TouchableOpacity,
+	FlatList
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { getInvoices } from "../services/billingService";
+import images from "../utils/imageAssets";
+
 
 const Billing = () => {
 	const [search, setSearch] = useState("");
+	const token = useSelector((state) => state.auth.token);
+	const [invoiceList, setInvoiceList] = useState([]);
 	const navigation = useNavigation();
+
+	useEffect(() => {
+		const fetchInvoices = async () => {
+			try {
+				const invoicesData = await getInvoices(token);
+				if (invoicesData.data && invoicesData.data.status) {
+					setInvoiceList(invoicesData.data.invoices);
+				}
+			} catch (error) {
+				console.log("Error fetching invoices list: ", error);
+				// You can handle errors by setting some state and showing it in the UI if needed
+			}
+		};
+
+		fetchInvoices();
+	}, [token]);
+
+	console.log("Invoices List: ", invoiceList);
+
+	const Item = ({ item }) => (
+		<TouchableOpacity onPress={handlePress}>
+			<View style={[styles.row, styles.card]}>
+				<View style={styles.columnLeft}>
+					<Text style={styles.nameLabel}>{item.task.title}</Text>
+					<Text style={styles.hourLabel}>{item.total_hours}</Text>
+				</View>
+				<View style={styles.columnRight}>
+					<Text style={styles.dollarLabel}>${item.amount}</Text>
+				</View>
+				<View style={styles.columnEnd}>
+					<Image
+						style={styles.image}
+						source={images[item.payee.filename]}
+					/>
+				</View>
+			</View>
+		</TouchableOpacity>
+	);
+
+	const renderItem = ({ item }) => <Item item={item} />;
 
 	const handleSearchChange = () => {
 		console.log("search");
@@ -49,7 +96,16 @@ const Billing = () => {
 					</View>
 				</View>
 
-				<TouchableOpacity onPress={handlePress}>
+				<View>
+					<FlatList
+						data={invoiceList}
+						renderItem={renderItem}
+						keyExtractor={(item) => item.id}
+						contentContainerStyle={{ paddingBottom: 20 }}
+					/>
+				</View>
+
+				{/* <TouchableOpacity onPress={handlePress}>
 					<View style={[styles.row, styles.card]}>
 						<View style={styles.columnLeft}>
 							<Text style={styles.nameLabel}>Wireframe</Text>
@@ -83,7 +139,7 @@ const Billing = () => {
 							/>
 						</View>
 					</View>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</View>
 		</SafeAreaView>
 	);

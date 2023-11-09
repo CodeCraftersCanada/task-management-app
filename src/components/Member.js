@@ -16,7 +16,6 @@ import images from "../utils/imageAssets";
 
 const Member = () => {
 	const [search, setSearch] = useState("");
-	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
 	const [memberList, setMemberList] = useState([]);
 
@@ -55,7 +54,7 @@ const Member = () => {
 				<Text style={styles.nameLabel}>Total Earnings</Text>
 				<Text style={styles.hourLabel}>$40,000</Text>
 			</View>
-	</View>
+		</View>
 	);
 
 	const renderItem = ({ item }) => <Item item={item} />;

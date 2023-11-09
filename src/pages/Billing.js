@@ -20,6 +20,7 @@ const Billing = () => {
 	const [search, setSearch] = useState("");
 	const token = useSelector((state) => state.auth.token);
 	const [invoiceList, setInvoiceList] = useState([]);
+	const [filteredList, setFilteredList] = useState([]);
 	const navigation = useNavigation();
 
 	useEffect(() => {
@@ -28,6 +29,7 @@ const Billing = () => {
 				const invoicesData = await getInvoices(token);
 				if (invoicesData.data && invoicesData.data.status) {
 					setInvoiceList(invoicesData.data.invoices);
+					setFilteredList(invoicesData.data.invoices);
 				}
 			} catch (error) {
 				console.log("Error fetching invoices list: ", error);
@@ -62,8 +64,20 @@ const Billing = () => {
 
 	const renderItem = ({ item }) => <Item item={item} />;
 
-	const handleSearchChange = () => {
-		console.log("search");
+	const handleSearchChange = (searchStr) => {
+		setSearch(searchStr);
+		console.log("search text: ", searchStr);
+		const searched = searchStr.toLowerCase();
+
+		if (!searched || searched == "") {
+			setFilteredList(invoiceList);
+		} else {
+			const newData = invoiceList.filter((item) => {
+				return item.task.title.toLowerCase().search(searched) > -1;
+			});
+			console.log(newData);
+			setFilteredList(newData);
+		}
 	};
 
 	const handlePress = () => {
@@ -86,7 +100,7 @@ const Billing = () => {
 								style={styles.input}
 								placeholder="Search tasks"
 								placeholderTextColor="#6F8793"
-								onChangeText={handleSearchChange}
+								onChangeText={(value) => handleSearchChange(value)}
 								value={search}
 							/>
 						</View>
@@ -98,48 +112,12 @@ const Billing = () => {
 
 				<View>
 					<FlatList
-						data={invoiceList}
+						data={filteredList}
 						renderItem={renderItem}
 						keyExtractor={(item) => item.id}
 						contentContainerStyle={{ paddingBottom: 20 }}
 					/>
 				</View>
-
-				{/* <TouchableOpacity onPress={handlePress}>
-					<View style={[styles.row, styles.card]}>
-						<View style={styles.columnLeft}>
-							<Text style={styles.nameLabel}>Wireframe</Text>
-							<Text style={styles.hourLabel}>03:30:00</Text>
-						</View>
-						<View style={styles.columnRight}>
-							<Text style={styles.dollarLabel}>$160.50</Text>
-						</View>
-						<View style={styles.columnEnd}>
-							<Image
-								style={styles.image}
-								source={require("../assets/img/dummy.png")}
-							/>
-						</View>
-					</View>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={handlePress}>
-					<View style={[styles.row, styles.card]}>
-						<View style={styles.columnLeft}>
-							<Text style={styles.nameLabel}>Icons</Text>
-							<Text style={styles.hourLabel}>01:30:00</Text>
-						</View>
-						<View style={styles.columnRight}>
-							<Text style={styles.dollarLabel}>$80</Text>
-						</View>
-						<View style={styles.columnEnd}>
-							<Image
-								style={styles.image}
-								source={require("../assets/img/dummy1.png")}
-							/>
-						</View>
-					</View>
-				</TouchableOpacity> */}
 			</View>
 		</SafeAreaView>
 	);

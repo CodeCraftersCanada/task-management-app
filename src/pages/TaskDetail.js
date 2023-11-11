@@ -39,12 +39,12 @@ const TaskDetail = ({ route, navigation }) => {
 		console.log("handleAdd");
 	};
 
-	const handleMarkComplete = (subtask, token) => {
+	const handleUpdateSubtaskStatus = (subtask, statusId, token) => {
 		const subtaskIndex = task.sub_tasks.findIndex((st) => st.id === subtask.id);
 		if (subtaskIndex !== -1) {
 			const updatedTask = { ...task };
 
-			updatedTask.sub_tasks[subtaskIndex].task_status_id = 2;
+			updatedTask.sub_tasks[subtaskIndex].task_status_id = statusId;
 
 			updateSubTask(updatedTask.sub_tasks[subtaskIndex], token)
 				.then((response) => {
@@ -204,7 +204,12 @@ const TaskDetail = ({ route, navigation }) => {
 								<View style={styles.cardRight}>
 									<View style={styles.cardRightIcon}>
 										{subtask.task_status_id == 2 ? (
-											<TouchableOpacity style={styles.fixedButton}>
+											<TouchableOpacity
+												style={styles.fixedButton}
+												onPress={() =>
+													handleUpdateSubtaskStatus(subtask, 1, token)
+												}
+											>
 												<Ionicons
 													name={"checkmark-circle-outline"}
 													size={28}
@@ -214,7 +219,9 @@ const TaskDetail = ({ route, navigation }) => {
 										) : (
 											<TouchableOpacity
 												style={styles.fixedButton}
-												onPress={() => handleMarkComplete(subtask, token)}
+												onPress={() =>
+													handleUpdateSubtaskStatus(subtask, 2, token)
+												}
 											>
 												<Ionicons
 													name={"ellipse-outline"}

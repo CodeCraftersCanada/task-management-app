@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
 	StyleSheet,
@@ -19,23 +19,31 @@ const TaskList = ({ route, navigation }) => {
 	const [tasks, setTasks] = useState([]);
 	const { status } = route.params || { status: 3 };
 	const [search, setSearch] = useState("");
+	const [loading, setLoading] = useState(true);
+	const [filteredTasks, setFilteredTasks] = useState([]);
 
-	getTasks(token, status, userInfo.user_type_id, userInfo.id)
-		.then((response) => {
-			if (response.data && response.data.status) {
-				try {
+	useEffect(() => {
+		setLoading(true);
+		getTasks(token, status, userInfo.user_type_id, userInfo.id)
+			.then((response) => {
+				if (response.data && response.data.status) {
 					setTasks(response.data.tasks);
-				} catch (error) {
-					console.log("Dispatch error: ", error);
+					setFilteredTasks(response.data.tasks); // Initialize filtered tasks
 				}
-			}
-		})
-		.catch((error) => {
-			//Alert.alert("Error", "Invalid credentials!");
-		});
+				setLoading(false);
+			})
+			.catch((error) => {
+				setLoading(false);
+				// Handle error appropriately
+			});
+	}, [token, status, userInfo.user_type_id, userInfo.id]);
 
-	const handleSearchChange = () => {
-		console.log("search");
+	const handleSearchChange = (text) => {
+		setSearch(text);
+		const filtered = tasks.filter((task) =>
+			task.title.toLowerCase().includes(text.toLowerCase())
+		);
+		setFilteredTasks(filtered);
 	};
 
 	useLayoutEffect(() => {
@@ -47,6 +55,14 @@ const TaskList = ({ route, navigation }) => {
 			navigation.setOptions({ headerTitle: "Tasks" });
 		}
 	}, [navigation]);
+
+	if (loading) {
+		return (
+			<View style={styles.container}>
+				<Text>Loading tasks...</Text>
+			</View>
+		);
+	}
 
 	return (
 		<SafeAreaView>
@@ -78,9 +94,8 @@ const TaskList = ({ route, navigation }) => {
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={styles.scrollViewContainer}
 				>
-					{status == 3 ? (
-						<>
-							{tasks.map((task, index) => (
+					{status == 3
+						? filteredTasks.map((task, index) => (
 								<View style={styles.card} key={task.id}>
 									<CardComplete
 										active={index === 0}
@@ -88,11 +103,8 @@ const TaskList = ({ route, navigation }) => {
 										navigation={navigation}
 									/>
 								</View>
-							))}
-						</>
-					) : (
-						<>
-							{tasks.map((task, index) => (
+						  ))
+						: filteredTasks.map((task, index) => (
 								<View style={styles.card} key={task.id}>
 									<CardInprogress
 										active={true}
@@ -100,9 +112,7 @@ const TaskList = ({ route, navigation }) => {
 										navigation={navigation}
 									/>
 								</View>
-							))}
-						</>
-					)}
+						  ))}
 				</ScrollView>
 			</View>
 		</SafeAreaView>

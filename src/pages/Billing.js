@@ -43,7 +43,7 @@ const Billing = () => {
 	console.log("Invoices List: ", invoiceList);
 
 	const Item = ({ item }) => (
-		<TouchableOpacity onPress={handlePress}>
+		<TouchableOpacity onPress={() => navigation.navigate("Billing Detail", { item })}>
 			<View style={[styles.row, styles.card]}>
 				<View style={styles.columnLeft}>
 					<Text style={styles.nameLabel}>{item.task.title}</Text>

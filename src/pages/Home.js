@@ -41,7 +41,6 @@ const Home = React.memo(({ navigation }) => {
 				);
 				if (completedTasksResponse.data && completedTasksResponse.data.status) {
 					setCompletedTasks(completedTasksResponse.data.tasks);
-					setFilteredCompletedTasks(completedTasksResponse.data.tasks);
 				}
 
 				const ongoingTasksResponse = await getTasks(
@@ -52,33 +51,34 @@ const Home = React.memo(({ navigation }) => {
 				);
 				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
 					setOngoingTasks(ongoingTasksResponse.data.tasks);
-					setFilteredOngoingTasks(ongoingTasksResponse.data.tasks);
 				}
 			} catch (error) {
 				console.log("Error fetching tasks: ", error);
-				// You can handle errors by setting some state and showing it in the UI if needed
+				// Handle errors as needed
 			}
 		};
 
 		fetchTasks();
 	}, [token, userInfo.user_type_id, userInfo.id]);
 
-	// useEffect(() => {
-	// 	const results = [...completedTasks, ...ongoingTasks].filter((task) => {
-	// 		return task.title.includes(search);
-	// 	});
+	useEffect(() => {
+		const delayDebounceFn = setTimeout(() => {
+			// Filtering logic
+			const allTasks = [...completedTasks, ...ongoingTasks];
+			const filteredResults = allTasks.filter((task) =>
+				task.title.includes(search)
+			);
 
-	// 	setFilteredCompletedTasks(
-	// 		results.filter((task) => task.task_status_id === 3)
-	// 	);
-	// 	setFilteredOngoingTasks(
-	// 		results.filter((task) => task.task_status_id === 2)
-	// 	);
-	// }, [search]);
+			setFilteredCompletedTasks(
+				filteredResults.filter((task) => task.task_status_id === 3)
+			);
+			setFilteredOngoingTasks(
+				filteredResults.filter((task) => task.task_status_id === 2)
+			);
+		}, 500); // 500ms delay
 
-	const handleSearchChange = () => {
-		console.log("search");
-	};
+		return () => clearTimeout(delayDebounceFn);
+	}, [search, completedTasks, ongoingTasks]);
 
 	const renderItem = ({ item }) => (
 		<CardInprogress task={item} navigation={navigation} />
@@ -113,7 +113,7 @@ const Home = React.memo(({ navigation }) => {
 							style={styles.input}
 							placeholder="Search tasks"
 							placeholderTextColor="#6F8793"
-							onChangeText={handleSearchChange}
+							onChangeText={setSearch}
 							value={search}
 						/>
 					</View>

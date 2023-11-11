@@ -25,6 +25,16 @@ const TaskDetail = ({ route, navigation }) => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
 	}, [navigation]);
 
+	const calculatedProgress =
+		task.sub_tasks.length > 0
+			? parseFloat(
+					(
+						task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+							.length / task.sub_tasks.length
+					).toFixed(2)
+			  )
+			: 0;
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
@@ -109,22 +119,47 @@ const TaskDetail = ({ route, navigation }) => {
 						<Text style={styles.taskDescription}>Project Progress</Text>
 					</View>
 					<View style={[styles.columnRight, styles.columnRightProgress]}>
-						<Progress.Circle
-							size={90}
-							progress={
-								task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
-									.length / task.sub_tasks.length
-							}
-							showsText={true}
-							thickness={3}
-							color={"#FED36A"}
-							unfilledColor={"#263238"}
-							borderColor={"#263238"}
-							textStyle={{
-								color: "white",
-							}}
-							direction={"clockwise"}
-						/>
+						{task.task_status_id < 3 && (
+							<Progress.Circle
+								size={90}
+								progress={calculatedProgress}
+								showsText={true}
+								thickness={3}
+								color={"#FED36A"}
+								unfilledColor={"#263238"}
+								borderColor={"#263238"}
+								textStyle={{
+									color: "white",
+								}}
+								direction={"clockwise"}
+								formatText={(progress) => {
+									const percent = (progress * 100).toFixed(0);
+									return `${percent}%`;
+								}}
+								key={calculatedProgress}
+								animated={false}
+							/>
+						)}
+						{task.task_status_id == 3 && (
+							<Progress.Circle
+								size={90}
+								progress={1}
+								showsText={true}
+								thickness={3}
+								color={"#FED36A"}
+								unfilledColor={"#263238"}
+								borderColor={"#263238"}
+								textStyle={{
+									color: "white",
+								}}
+								direction={"clockwise"}
+								formatText={(progress) => {
+									const percent = (1 * 100).toFixed(0);
+									return `${percent}%`;
+								}}
+								animated={false}
+							/>
+						)}
 					</View>
 				</View>
 				<View style={styles.row}>

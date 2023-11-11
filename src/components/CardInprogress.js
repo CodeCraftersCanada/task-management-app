@@ -9,6 +9,16 @@ const CardInprogress = ({ task, navigation }) => {
 		navigation.navigate("Task Detail", { task: task });
 	};
 
+	const calculatedProgress =
+		task.sub_tasks.length > 0
+			? parseFloat(
+					(
+						task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+							.length / task.sub_tasks.length
+					).toFixed(2)
+			  )
+			: 0;
+
 	return (
 		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer]}>
@@ -47,10 +57,7 @@ const CardInprogress = ({ task, navigation }) => {
 					<View style={[styles.columnRight]}>
 						<Progress.Circle
 							size={90}
-							progress={
-								task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
-									.length / task.sub_tasks.length
-							}
+							progress={calculatedProgress}
 							showsText={true}
 							thickness={3}
 							color={"#FED36A"}
@@ -60,6 +67,7 @@ const CardInprogress = ({ task, navigation }) => {
 								color: "white",
 							}}
 							direction={"clockwise"}
+							animated={false}
 						/>
 					</View>
 				</View>

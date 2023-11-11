@@ -8,7 +8,7 @@ import {
 	Image,
 	Text,
 	TouchableOpacity,
-	SafeAreaView
+	SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { signIn } from "../../services/authService";
@@ -25,7 +25,7 @@ const Login = () => {
 		signIn(email, password)
 			.then((response) => {
 				if (response.data && response.data.status) {
-					Alert.alert("Success", response.data.message);
+					//Alert.alert("Success", response.data.message);
 					try {
 						dispatch(login(response.data));
 					} catch (error) {
@@ -55,7 +55,9 @@ const Login = () => {
 				/>
 				<View className="flex-row items-center justify-center">
 					<Text className="text-white text-2xl font-semibold">Twin</Text>
-					<Text className="text-primary-yellow text-2xl font-semibold">Tech</Text>
+					<Text className="text-primary-yellow text-2xl font-semibold">
+						Tech
+					</Text>
 				</View>
 				<Text style={styles.welcomeText}>Welcome Back!</Text>
 				<TextInput

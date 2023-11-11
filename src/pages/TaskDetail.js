@@ -7,7 +7,7 @@ import {
 	SafeAreaView,
 	Image,
 	TouchableOpacity,
-	Images,
+	TextInput,
 	ScrollView,
 	Alert,
 } from "react-native";
@@ -15,7 +15,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 import { formatDate } from "../utils/formatDate";
 import images from "../utils/imageAssets";
-import { updateSubTask } from "../services/taskDetailService";
+import {
+	updateSubTask,
+	updateTask,
+	addSubtask,
+} from "../services/taskDetailService";
 
 const TaskDetail = ({ route, navigation }) => {
 	const { task, onTaskUpdate } = route.params || {
@@ -23,24 +27,93 @@ const TaskDetail = ({ route, navigation }) => {
 		onTaskUpdate: () => {},
 	};
 	const [taskState, setTaskState] = useState(task);
+	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
+	const [showAddSubtaskInput, setShowAddSubtaskInput] = useState(false);
+	const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
+	const [calculatedProgress, setCalculatedProgress] = useState(0);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
 	}, [navigation]);
 
-	const calculatedProgress =
-		task.sub_tasks.length > 0
-			? parseFloat(
-					(
-						task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
-							.length / task.sub_tasks.length
-					).toFixed(2)
-			  )
-			: 0;
+	useEffect(() => {
+		const newProgress =
+			taskState.sub_tasks.length > 0
+				? parseFloat(
+						(
+							taskState.sub_tasks.filter(
+								(subTask) => subTask.task_status_id === 2
+							).length / taskState.sub_tasks.length
+						).toFixed(2)
+				  )
+				: 0;
+		setCalculatedProgress(newProgress);
+	}, [taskState]);
 
-	const handleAdd = () => {
-		console.log("handleAdd");
+	// const calculatedProgress =
+	// 	task.sub_tasks.length > 0
+	// 		? parseFloat(
+	// 				(
+	// 					task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
+	// 						.length / task.sub_tasks.length
+	// 				).toFixed(2)
+	// 		  )
+	// 		: 0;
+
+	const handleAdd = (title, token) => {
+		const newSubtask = {
+			title: title,
+			task_id: taskState.id, // Assuming this should be taskState.id, not task.id
+			task_status_id: 1,
+			created_by: userInfo.id,
+			assigned_to: userInfo.id,
+			task_hours: 0,
+		};
+
+		addSubtask(newSubtask, token)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					// Create a new task object with updated sub_tasks
+					const newSubtaskFromResponse = response.data.subTask;
+					const updatedTask = {
+						...taskState,
+						sub_tasks: [...taskState.sub_tasks, newSubtaskFromResponse],
+					};
+					setTaskState(updatedTask);
+					onTaskUpdate();
+					setShowAddSubtaskInput(false);
+					setNewSubtaskTitle("");
+					Alert.alert("Success", response.data.message);
+				}
+			})
+			.catch((error) => {
+				console.error("Error adding subtask:", error);
+				Alert.alert(
+					"Error",
+					"Failed to add subtask: " +
+						(error.response ? error.response.data.message : error.message)
+				);
+			});
+	};
+
+	const handleUpdateTaskStatus = () => {
+		if (calculatedProgress != 1) {
+			Alert.alert("Subtasks are not all mark as complete.");
+		} else {
+			task.task_status_id = 3;
+			updateTask(task, token)
+				.then((response) => {
+					if (response.data && response.data.status) {
+						setTask(task);
+						onTaskUpdate();
+						Alert.alert("Success", response.data.message);
+					}
+				})
+				.catch((error) => {
+					Alert.alert("Error", "Failed to update task!");
+				});
+		}
 	};
 
 	const handleUpdateSubtaskStatus = (subtask, statusId, token) => {
@@ -68,7 +141,32 @@ const TaskDetail = ({ route, navigation }) => {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.row}>
-					<Text style={styles.taskTitle}>{task.title}</Text>
+					<View style={styles.cardLeft}>
+						<Text style={styles.taskTitle}>{task.title}</Text>
+					</View>
+					<View style={styles.cardRight}>
+						<View>
+							{task.task_status_id == 3 ? (
+								<TouchableOpacity>
+									<Ionicons
+										name={"checkmark-circle-outline"}
+										size={28}
+										color={"#FED36A"}
+									/>
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity
+									onPress={() => handleUpdateTaskStatus(task, token)}
+								>
+									<Ionicons
+										name={"ellipse-outline"}
+										size={24}
+										color={"white"}
+									/>
+								</TouchableOpacity>
+							)}
+						</View>
+					</View>
 				</View>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>
@@ -150,7 +248,7 @@ const TaskDetail = ({ route, navigation }) => {
 					<View style={[styles.columnRight, styles.columnRightProgress]}>
 						{task.task_status_id < 3 && (
 							<Progress.Circle
-								size={90}
+								size={70}
 								progress={calculatedProgress}
 								showsText={true}
 								thickness={3}
@@ -192,15 +290,35 @@ const TaskDetail = ({ route, navigation }) => {
 					</View>
 				</View>
 				<View style={styles.row}>
-					<Text style={styles.taskDescription}>All Tasks</Text>
+					<View style={styles.cardLeft}>
+						<Text style={styles.taskDescription}>All Tasks</Text>
+					</View>
+					<View style={styles.cardRight}>
+						{task.task_status_id < 3 && (
+							<View>
+								<TouchableOpacity onPress={() => setShowAddSubtaskInput(true)}>
+									<Ionicons name={"add-outline"} size={28} color={"white"} />
+								</TouchableOpacity>
+							</View>
+						)}
+					</View>
 				</View>
-
+				{showAddSubtaskInput && (
+					<TextInput
+						style={styles.input}
+						placeholder="Enter subtask title"
+						placeholderTextColor="#6F8793"
+						onChangeText={setNewSubtaskTitle}
+						value={newSubtaskTitle}
+						onBlur={() => handleAdd(newSubtaskTitle, token)}
+					/>
+				)}
 				<ScrollView
 					vertical
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={styles.scrollViewContainer}
 				>
-					{task.sub_tasks.map((subtask, index) => (
+					{taskState.sub_tasks.map((subtask, index) => (
 						<View style={styles.row} key={subtask.id}>
 							<View style={styles.card}>
 								<View style={styles.cardLeft}>
@@ -217,7 +335,7 @@ const TaskDetail = ({ route, navigation }) => {
 											>
 												<Ionicons
 													name={"checkmark-circle-outline"}
-													size={28}
+													size={24}
 													color={"#263238"}
 												/>
 											</TouchableOpacity>
@@ -230,7 +348,7 @@ const TaskDetail = ({ route, navigation }) => {
 											>
 												<Ionicons
 													name={"ellipse-outline"}
-													size={28}
+													size={24}
 													color={"#263238"}
 												/>
 											</TouchableOpacity>
@@ -242,13 +360,6 @@ const TaskDetail = ({ route, navigation }) => {
 					))}
 				</ScrollView>
 			</View>
-			{task.task_status_id < 3 && (
-				<View style={styles.fixedButtonContainer}>
-					<TouchableOpacity style={styles.fixedButton} onPress={handleAdd}>
-						<Text style={styles.fixedButtonText}>Add Task</Text>
-					</TouchableOpacity>
-				</View>
-			)}
 		</SafeAreaView>
 	);
 };
@@ -363,7 +474,7 @@ const styles = StyleSheet.create({
 	},
 	fixedButton: {
 		backgroundColor: "#FED36A",
-		padding: 15,
+		padding: 0,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -371,6 +482,17 @@ const styles = StyleSheet.create({
 		color: "#000",
 		fontSize: 18,
 		fontWeight: "600",
+	},
+	input: {
+		marginBottom: 10,
+		height: 40,
+		borderWidth: 0,
+		paddingHorizontal: 12,
+		paddingVertical: 12,
+		width: "100%",
+		backgroundColor: "#455A64",
+		color: "#FFFFFF",
+		fontSize: 18,
 	},
 });
 

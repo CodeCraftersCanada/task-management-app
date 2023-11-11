@@ -9,9 +9,6 @@ const signIn = (email, password) => {
 };
 
 const signUp = (name, email, password) => {
-	console.log("name ", name);
-	console.log("email ", email);
-	console.log("password ", password);
 	return axios.post(`${API_BASE_URL}/api/signup`, {
 		name: name,
 		email: email,

@@ -51,16 +51,6 @@ const TaskDetail = ({ route, navigation }) => {
 		setCalculatedProgress(newProgress);
 	}, [taskState]);
 
-	// const calculatedProgress =
-	// 	task.sub_tasks.length > 0
-	// 		? parseFloat(
-	// 				(
-	// 					task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
-	// 						.length / task.sub_tasks.length
-	// 				).toFixed(2)
-	// 		  )
-	// 		: 0;
-
 	const handleAdd = (title, token) => {
 		const newSubtask = {
 			title: title,

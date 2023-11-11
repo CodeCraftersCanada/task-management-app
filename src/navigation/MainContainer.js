@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import { View, Text } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -20,6 +21,7 @@ const newTaskName = "New Task";
 const Tab = createBottomTabNavigator();
 
 const MainContainer = ({ navigation }) => {
+	const userInfo = useSelector((state) => state.auth.user);
 	const setHeaderTitle = useSetHeaderTitle();
 
 	useEffect(
@@ -98,7 +100,9 @@ const MainContainer = ({ navigation }) => {
 			<Tab.Screen name={homeName} component={HomeScreen} />
 			<Tab.Screen name={billingName} component={BillingScreen} />
 			<Tab.Screen name={newTaskName} component={NewTaskScreen} />
-			<Tab.Screen name={memberName} component={MemberScreen} />
+			{userInfo.user_type_id == 1 && (
+				<Tab.Screen name={memberName} component={MemberScreen} />
+			)}
 		</Tab.Navigator>
 	);
 };

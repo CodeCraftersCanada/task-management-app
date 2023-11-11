@@ -23,7 +23,7 @@ const CardInprogress = ({ task, navigation }) => {
 		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer]}>
 				<Text style={[styles.cardLargeText, styles.colorWhite]}>
-					Mobile App Wireframe
+					{task.title}
 				</Text>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>

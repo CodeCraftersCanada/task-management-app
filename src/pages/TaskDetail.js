@@ -1,4 +1,5 @@
-import React, { useEffect, useContext, useLayoutEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -8,18 +9,17 @@ import {
 	TouchableOpacity,
 	Images,
 	ScrollView,
+	Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 import { formatDate } from "../utils/formatDate";
 import images from "../utils/imageAssets";
+import { updateSubTask } from "../services/taskDetailService";
 
 const TaskDetail = ({ route, navigation }) => {
-	const { task } = route.params || { task: {} };
-
-	const handleAdd = () => {
-		console.log("handleAdd");
-	};
+	const [task, setTask] = useState(route.params.task || {});
+	const token = useSelector((state) => state.auth.token);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
@@ -29,11 +29,35 @@ const TaskDetail = ({ route, navigation }) => {
 		task.sub_tasks.length > 0
 			? parseFloat(
 					(
-						task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+						task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
 							.length / task.sub_tasks.length
 					).toFixed(2)
 			  )
 			: 0;
+
+	const handleAdd = () => {
+		console.log("handleAdd");
+	};
+
+	const handleMarkComplete = (subtask, token) => {
+		const subtaskIndex = task.sub_tasks.findIndex((st) => st.id === subtask.id);
+		if (subtaskIndex !== -1) {
+			const updatedTask = { ...task };
+
+			updatedTask.sub_tasks[subtaskIndex].task_status_id = 2;
+
+			updateSubTask(updatedTask.sub_tasks[subtaskIndex], token)
+				.then((response) => {
+					if (response.data && response.data.status) {
+						setTask(updatedTask);
+						Alert.alert("Success", response.data.message);
+					}
+				})
+				.catch((error) => {
+					Alert.alert("Error", "Failed to update task!");
+				});
+		}
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -143,7 +167,7 @@ const TaskDetail = ({ route, navigation }) => {
 						{task.task_status_id == 3 && (
 							<Progress.Circle
 								size={90}
-								progress={1}
+								progress={calculatedProgress}
 								showsText={true}
 								thickness={3}
 								color={"#FED36A"}
@@ -180,17 +204,24 @@ const TaskDetail = ({ route, navigation }) => {
 								<View style={styles.cardRight}>
 									<View style={styles.cardRightIcon}>
 										{subtask.task_status_id == 2 ? (
-											<Ionicons
-												name={"checkmark-circle-outline"}
-												size={28}
-												color={"#263238"}
-											/>
+											<TouchableOpacity style={styles.fixedButton}>
+												<Ionicons
+													name={"checkmark-circle-outline"}
+													size={28}
+													color={"#263238"}
+												/>
+											</TouchableOpacity>
 										) : (
-											<Ionicons
-												name={"ellipse-outline"}
-												size={28}
-												color={"#263238"}
-											/>
+											<TouchableOpacity
+												style={styles.fixedButton}
+												onPress={() => handleMarkComplete(subtask, token)}
+											>
+												<Ionicons
+													name={"ellipse-outline"}
+													size={28}
+													color={"#263238"}
+												/>
+											</TouchableOpacity>
 										)}
 									</View>
 								</View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
 	StyleSheet,
@@ -35,7 +35,10 @@ const TaskDetail = ({ route, navigation }) => {
 	const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
 	const [calculatedProgress, setCalculatedProgress] = useState(0);
 	const [isTaskInProgress, setIsTaskInProgress] = useState(false);
+	const [shouldUpdateTask, setShouldUpdateTask] = useState(false);
 	const [rotateValue] = useState(new Animated.Value(0));
+	const [timer, setTimer] = useState(0);
+	const intervalRef = useRef(null);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
@@ -58,10 +61,46 @@ const TaskDetail = ({ route, navigation }) => {
 	useEffect(() => {
 		if (isTaskInProgress) {
 			startRotation();
+			startTimer();
 		} else {
 			stopRotation();
+			stopTimer();
 		}
+		return () => clearInterval(intervalRef.current);
 	}, [isTaskInProgress]);
+
+	useEffect(() => {
+		if (!isTaskInProgress && shouldUpdateTask) {
+			const newHours = convertSecondsToHours(timer);
+
+			const updatedTask = {
+				...taskState,
+				task_hours: newHours,
+			};
+
+			updateTask(updatedTask, token)
+				.then((response) => {
+					if (response.data && response.data.status) {
+						setTaskState((prevTaskState) => ({
+							...prevTaskState,
+							task_hours: response.data.task.task_hours,
+						}));
+						onTaskUpdate();
+						Alert.alert("Success", response.data.message);
+					}
+				})
+				.catch((error) => {
+					console.error("Error updating task:", error);
+					Alert.alert(
+						"Error",
+						"Failed to update task: " +
+							(error.response ? error.response.data.message : error.message)
+					);
+				});
+
+			setShouldUpdateTask(false);
+		}
+	}, [isTaskInProgress, shouldUpdateTask, timer, taskState, token]);
 
 	const handleAdd = (title, token) => {
 		const newSubtask = {
@@ -139,25 +178,61 @@ const TaskDetail = ({ route, navigation }) => {
 		}
 	};
 
+	const handleStop = () => {
+		setIsTaskInProgress(false);
+		setShouldUpdateTask(true);
+	};
+
 	const startRotation = () => {
-		rotateValue.setValue(0); // Reset the rotation
+		rotateValue.setValue(0);
 		const rotationAnimation = Animated.timing(rotateValue, {
-			toValue: 1, // Rotate 180 degrees
-			duration: 1000, // Duration in milliseconds
-			useNativeDriver: true, // Add this line
+			toValue: 1,
+			duration: 1000,
+			useNativeDriver: true,
 		});
 
 		Animated.loop(rotationAnimation).start();
 	};
 
 	const stopRotation = () => {
-		rotateValue.stopAnimation(); // Stop the current animation
+		rotateValue.stopAnimation();
 	};
 
 	const rotateData = rotateValue.interpolate({
 		inputRange: [0, 1],
 		outputRange: ["0deg", "180deg"],
 	});
+
+	const getInitialTimerSeconds = () => {
+		const hours = parseFloat(taskState.task_hours);
+		return Math.round(hours * 3600);
+	};
+
+	const startTimer = () => {
+		const initialSeconds = getInitialTimerSeconds();
+		setTimer(initialSeconds);
+		intervalRef.current = setInterval(() => {
+			setTimer((prevTimer) => prevTimer + 1);
+		}, 1000);
+	};
+
+	const stopTimer = () => {
+		clearInterval(intervalRef.current);
+	};
+
+	const convertSecondsToHours = (seconds) => {
+		return (seconds / 3600).toFixed(2);
+	};
+
+	const formatTimer = (totalSeconds) => {
+		const hours = Math.floor(totalSeconds / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+		const seconds = totalSeconds % 60;
+
+		return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+			.toString()
+			.padStart(2, "0")}`;
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -184,7 +259,7 @@ const TaskDetail = ({ route, navigation }) => {
 								<>
 									<TouchableOpacity
 										style={styles.fixedButton}
-										onPress={() => setIsTaskInProgress(false)}
+										onPress={handleStop}
 									>
 										<Ionicons
 											name={"stop-circle-outline"}
@@ -282,7 +357,11 @@ const TaskDetail = ({ route, navigation }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Hours</Text>
-								<Text style={styles.mediumLabel}>{task.task_hours}</Text>
+								<Text style={styles.mediumLabel}>
+									{isTaskInProgress
+										? formatTimer(timer)
+										: formatTimer(getInitialTimerSeconds())}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -296,7 +375,7 @@ const TaskDetail = ({ route, navigation }) => {
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Cost</Text>
 								<Text style={styles.mediumLabel}>
-									${task.task_hours * task.assigned.hourly_rate}
+									${taskState.task_hours * task.assigned.hourly_rate}
 								</Text>
 							</View>
 						</View>

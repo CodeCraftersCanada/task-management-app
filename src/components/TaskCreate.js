@@ -10,6 +10,7 @@ import {
 	SafeAreaView,
 	ScrollView,
 	Image,
+	Alert,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,11 +19,13 @@ import AutoCompleteDropdown from "./AutoCompleteDropdown";
 import { getMembers } from "../services/userService";
 import { useNavigation } from "@react-navigation/native";
 import images from "../utils/imageAssets";
+import { addTask } from "../services/taskDetailService";
 
 const TaskCreate = () => {
 	const navigation = useNavigation();
 	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
+	const [selectedMemberId, setSelectedMemberId] = useState(null);
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -30,7 +33,7 @@ const TaskCreate = () => {
 		end_date: "",
 		assigned_to: "",
 		created_by: userInfo.id,
-		task_status_id: 1,
+		task_status_id: 2,
 	});
 	const [members, setMembers] = useState([]);
 
@@ -58,6 +61,39 @@ const TaskCreate = () => {
 		}));
 	};
 
+	const handleMemberSelect = (memberId) => {
+		setFormData((prevState) => ({
+			...prevState,
+			assigned_to: memberId,
+		}));
+		setSelectedMemberId(memberId);
+	};
+
+	const handleSave = () => {
+		addTask(formData, token)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					Alert.alert("Success", response.data.message);
+					setFormData({
+						title: "",
+						description: "",
+						start_date: "",
+						end_date: "",
+						assigned_to: "",
+						created_by: userInfo.id,
+						task_status_id: 2,
+					});
+					navigation.navigate("Home");
+				}
+			})
+			.catch((error) => {
+				console.error("Error adding subtask:", error);
+			});
+	};
+
+	const isSelected = (memberId) => {
+		return memberId === selectedMemberId;
+	};
 	const [isStartDatePickerVisible, setStartDatePickerVisibility] =
 		useState(false);
 	const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
@@ -105,7 +141,9 @@ const TaskCreate = () => {
 					value={formData.title}
 				/>
 				<Text style={styles.fieldLabel}>Task Details</Text>
-				<TextArea
+				<TextInput
+					multiline
+					style={[styles.input, styles.textArea]}
 					onChangeText={(value) => handleInputChange("description", value)}
 					value={formData.description}
 				/>
@@ -176,21 +214,28 @@ const TaskCreate = () => {
 					contentContainerStyle={styles.scrollViewContainer}
 				>
 					{members.map((member, index) => (
-						<TouchableOpacity key={member.id}>
+						<TouchableOpacity
+							key={member.id}
+							onPress={() => handleMemberSelect(member.id)}
+						>
 							<Image
-								style={styles.image}
+								style={[
+									styles.image,
+									isSelected(member.id) && styles.selectedImage,
+								]}
 								source={images[member.filename]}
-								key={member.id}
 							/>
 						</TouchableOpacity>
 					))}
 				</ScrollView>
 
-				<View style={styles.fixedButtonContainer}>
-					<View style={styles.fixedButton}>
-						<Text style={styles.fixedButtonText}>SAVE</Text>
+				<TouchableOpacity onPress={handleSave}>
+					<View style={styles.fixedButtonContainer}>
+						<View style={styles.fixedButton}>
+							<Text style={styles.fixedButtonText}>SAVE</Text>
+						</View>
 					</View>
-				</View>
+				</TouchableOpacity>
 			</View>
 		</SafeAreaView>
 	);
@@ -313,6 +358,13 @@ const styles = StyleSheet.create({
 		color: "#000",
 		fontSize: 18,
 		fontWeight: "600",
+	},
+	selectedImage: {
+		borderColor: "#FED36A",
+		borderWidth: 2,
+	},
+	textArea: {
+		height: 100,
 	},
 });
 

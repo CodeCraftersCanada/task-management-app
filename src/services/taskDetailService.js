@@ -20,7 +20,6 @@ const updateTask = (data, token) => {
 			Authorization: `Bearer ${token}`,
 		},
 	};
-	console.log("HERERE");
 	return axios.put(`${API_BASE_URL}/api/task/${data.id}`, data, config);
 };
 
@@ -35,4 +34,15 @@ const addSubtask = (data, token) => {
 	return axios.post(`${API_BASE_URL}/api/subTask`, data, config);
 };
 
-export { updateSubTask, updateTask, addSubtask };
+const addTask = (data, token) => {
+	const config = {
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	};
+
+	return axios.post(`${API_BASE_URL}/api/task`, data, config);
+};
+
+export { updateSubTask, updateTask, addSubtask, addTask };

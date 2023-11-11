@@ -53,6 +53,11 @@ const AppContainer = () => {
 							component={BillingDetail}
 							options={{ headerBackTitle: "Back" }}
 						/>
+						<Stack.Screen
+							name="Login"
+							component={Login}
+							options={{ headerShown: false }}
+						/>
 					</>
 				) : (
 					<>

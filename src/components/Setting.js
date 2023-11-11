@@ -13,6 +13,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import images from "../utils/imageAssets";
 import { updateUser } from "../services/settingService";
+import { useNavigation } from "@react-navigation/native";
 
 const Setting = () => {
 	const userInfo = useSelector((state) => state.auth.user);
@@ -51,11 +52,20 @@ const Setting = () => {
 				//Alert.alert("Error", "Invalid credentials!");
 			});
 	};
+	const navigation = useNavigation();
+	const handleLogout = () => {
+		navigation.navigate("Login");
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.settingContainer}>
+					<View style={styles.logoutIcon}>
+						<TouchableOpacity onPress={handleLogout}>
+							<Ionicons name={"log-out-outline"} size={18} color={"#FFF"} />
+						</TouchableOpacity>
+					</View>
 					<View
 						style={[
 							styles.imageWrapper,
@@ -250,6 +260,11 @@ const styles = StyleSheet.create({
 		color: "#000",
 		fontSize: 18,
 		fontWeight: "600",
+	},
+	logoutIcon: {
+		display: "flex",
+		justifyContent: "flex-end",
+		alignItems: "flex-end",
 	},
 });
 

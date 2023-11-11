@@ -139,6 +139,9 @@ const TaskDetail = ({ route, navigation }) => {
 	};
 
 	const handleUpdateTaskStatus = () => {
+		if (userInfo.user_type_id == 1) {
+			return;
+		}
 		if (calculatedProgress != 1) {
 			Alert.alert("Subtasks are not all mark as complete.");
 		} else {
@@ -158,6 +161,9 @@ const TaskDetail = ({ route, navigation }) => {
 	};
 
 	const handleUpdateSubtaskStatus = (subtask, statusId, token) => {
+		if (userInfo.user_type_id == 1) {
+			return;
+		}
 		const subtaskIndex = taskState.sub_tasks.findIndex(
 			(st) => st.id === subtask.id
 		);
@@ -250,34 +256,36 @@ const TaskDetail = ({ route, navigation }) => {
 						<Text style={styles.taskTitle}>{task.title}</Text>
 					</View>
 					<View style={styles.cardRight}>
-						<View style={(styles.cardRightIcon, styles.marginRight5)}>
-							{!isTaskInProgress && (
-								<TouchableOpacity
-									style={styles.fixedButton}
-									onPress={() => setIsTaskInProgress(true)}
-								>
-									<Ionicons
-										name={"play-circle-outline"}
-										size={28}
-										color={"white"}
-									/>
-								</TouchableOpacity>
-							)}
-							{isTaskInProgress && (
-								<>
+						{task.task_status_id < 3 && userInfo.user_type_id == 2 && (
+							<View style={(styles.cardRightIcon, styles.marginRight5)}>
+								{!isTaskInProgress && (
 									<TouchableOpacity
 										style={styles.fixedButton}
-										onPress={handleStop}
+										onPress={() => setIsTaskInProgress(true)}
 									>
 										<Ionicons
-											name={"stop-circle-outline"}
+											name={"play-circle-outline"}
 											size={28}
 											color={"white"}
 										/>
 									</TouchableOpacity>
-								</>
-							)}
-						</View>
+								)}
+								{isTaskInProgress && (
+									<>
+										<TouchableOpacity
+											style={styles.fixedButton}
+											onPress={handleStop}
+										>
+											<Ionicons
+												name={"stop-circle-outline"}
+												size={28}
+												color={"white"}
+											/>
+										</TouchableOpacity>
+									</>
+								)}
+							</View>
+						)}
 
 						<View style={styles.cardRightIcon}>
 							{task.task_status_id == 3 ? (
@@ -448,7 +456,7 @@ const TaskDetail = ({ route, navigation }) => {
 						<Text style={styles.taskDescription}>All Tasks</Text>
 					</View>
 					<View style={styles.cardRight}>
-						{task.task_status_id < 3 && (
+						{task.task_status_id < 3 && userInfo.user_type_id == 2 && (
 							<View>
 								<TouchableOpacity onPress={() => setShowAddSubtaskInput(true)}>
 									<Ionicons name={"add-outline"} size={28} color={"white"} />

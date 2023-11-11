@@ -34,6 +34,7 @@ const TaskCreate = () => {
 		assigned_to: "",
 		created_by: userInfo.id,
 		task_status_id: 2,
+		task_hours: 0,
 	});
 	const [members, setMembers] = useState([]);
 

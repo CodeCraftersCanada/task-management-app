@@ -10,7 +10,9 @@ import {
 	TextInput,
 	ScrollView,
 	Alert,
+	Animated,
 } from "react-native";
+
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
 import { formatDate } from "../utils/formatDate";
@@ -32,6 +34,8 @@ const TaskDetail = ({ route, navigation }) => {
 	const [showAddSubtaskInput, setShowAddSubtaskInput] = useState(false);
 	const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
 	const [calculatedProgress, setCalculatedProgress] = useState(0);
+	const [isTaskInProgress, setIsTaskInProgress] = useState(false);
+	const [rotateValue] = useState(new Animated.Value(0));
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
@@ -50,6 +54,14 @@ const TaskDetail = ({ route, navigation }) => {
 				: 0;
 		setCalculatedProgress(newProgress);
 	}, [taskState]);
+
+	useEffect(() => {
+		if (isTaskInProgress) {
+			startRotation();
+		} else {
+			stopRotation();
+		}
+	}, [isTaskInProgress]);
 
 	const handleAdd = (title, token) => {
 		const newSubtask = {
@@ -127,6 +139,26 @@ const TaskDetail = ({ route, navigation }) => {
 		}
 	};
 
+	const startRotation = () => {
+		rotateValue.setValue(0); // Reset the rotation
+		const rotationAnimation = Animated.timing(rotateValue, {
+			toValue: 1, // Rotate 180 degrees
+			duration: 1000, // Duration in milliseconds
+			useNativeDriver: true, // Add this line
+		});
+
+		Animated.loop(rotationAnimation).start();
+	};
+
+	const stopRotation = () => {
+		rotateValue.stopAnimation(); // Stop the current animation
+	};
+
+	const rotateData = rotateValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: ["0deg", "180deg"],
+	});
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
@@ -135,9 +167,38 @@ const TaskDetail = ({ route, navigation }) => {
 						<Text style={styles.taskTitle}>{task.title}</Text>
 					</View>
 					<View style={styles.cardRight}>
-						<View>
+						<View style={(styles.cardRightIcon, styles.marginRight5)}>
+							{!isTaskInProgress && (
+								<TouchableOpacity
+									style={styles.fixedButton}
+									onPress={() => setIsTaskInProgress(true)}
+								>
+									<Ionicons
+										name={"play-circle-outline"}
+										size={28}
+										color={"white"}
+									/>
+								</TouchableOpacity>
+							)}
+							{isTaskInProgress && (
+								<>
+									<TouchableOpacity
+										style={styles.fixedButton}
+										onPress={() => setIsTaskInProgress(false)}
+									>
+										<Ionicons
+											name={"stop-circle-outline"}
+											size={28}
+											color={"white"}
+										/>
+									</TouchableOpacity>
+								</>
+							)}
+						</View>
+
+						<View style={styles.cardRightIcon}>
 							{task.task_status_id == 3 ? (
-								<TouchableOpacity>
+								<TouchableOpacity style={styles.fixedButton}>
 									<Ionicons
 										name={"checkmark-circle-outline"}
 										size={28}
@@ -146,11 +207,12 @@ const TaskDetail = ({ route, navigation }) => {
 								</TouchableOpacity>
 							) : (
 								<TouchableOpacity
+									style={styles.fixedButton}
 									onPress={() => handleUpdateTaskStatus(task, token)}
 								>
 									<Ionicons
 										name={"ellipse-outline"}
-										size={24}
+										size={28}
 										color={"white"}
 									/>
 								</TouchableOpacity>
@@ -196,11 +258,26 @@ const TaskDetail = ({ route, navigation }) => {
 						<View style={styles.row}>
 							<View style={[styles.columnLeft, styles.columnLeft20]}>
 								<View style={styles.columnIcon}>
-									<Ionicons
-										name={"hourglass-outline"}
-										size={28}
-										color={"#263238"}
-									/>
+									{!isTaskInProgress && (
+										<Ionicons
+											name={"time-outline"}
+											size={28}
+											color={"#263238"}
+										/>
+									)}
+									{isTaskInProgress && (
+										<>
+											<Animated.View
+												style={{ transform: [{ rotate: rotateData }] }}
+											>
+												<Ionicons
+													name={"hourglass-outline"}
+													size={28}
+													color={"#263238"}
+												/>
+											</Animated.View>
+										</>
+									)}
 								</View>
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
@@ -325,8 +402,8 @@ const TaskDetail = ({ route, navigation }) => {
 											>
 												<Ionicons
 													name={"checkmark-circle-outline"}
-													size={24}
-													color={"#263238"}
+													size={27}
+													color={"#FED36A"}
 												/>
 											</TouchableOpacity>
 										) : (
@@ -338,8 +415,8 @@ const TaskDetail = ({ route, navigation }) => {
 											>
 												<Ionicons
 													name={"ellipse-outline"}
-													size={24}
-													color={"#263238"}
+													size={27}
+													color={"#FED36A"}
 												/>
 											</TouchableOpacity>
 										)}
@@ -445,16 +522,17 @@ const styles = StyleSheet.create({
 	cardLeft: {
 		justifyContent: "center",
 		alignItems: "flex-start",
-		width: "70%",
+		width: "80%",
 	},
 	cardRight: {
-		justifyContent: "center",
+		flexDirection: "row",
+		justifyContent: "flex-end",
 		alignItems: "flex-end",
-		width: "30%",
+		width: "20%",
 	},
 	cardRightIcon: {
-		backgroundColor: "#FED36A",
-		padding: 5,
+		//backgroundColor: "#FED36A",
+		//padding: 2,
 	},
 	fixedButtonContainer: {
 		position: "absolute",
@@ -463,7 +541,7 @@ const styles = StyleSheet.create({
 		right: 10,
 	},
 	fixedButton: {
-		backgroundColor: "#FED36A",
+		//backgroundColor: "#FED36A",
 		padding: 0,
 		justifyContent: "center",
 		alignItems: "center",
@@ -483,6 +561,9 @@ const styles = StyleSheet.create({
 		backgroundColor: "#455A64",
 		color: "#FFFFFF",
 		fontSize: 18,
+	},
+	marginRight5: {
+		marginRight: 5,
 	},
 });
 

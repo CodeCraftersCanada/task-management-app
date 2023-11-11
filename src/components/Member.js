@@ -7,7 +7,7 @@ import {
 	SafeAreaView,
 	TextInput,
 	Image,
-	FlatList
+	FlatList,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getUsers } from "../services/memberService";
@@ -35,15 +35,10 @@ const Member = () => {
 		fetchUsers();
 	}, [token]);
 
-	console.log("Member List: ", setUserList);
-
 	const Item = ({ item }) => (
 		<View style={styles.row}>
 			<View style={styles.columnLeft}>
-				<Image
-					style={styles.image}
-					source={images[item.filename]}
-				/>
+				<Image style={styles.image} source={images[item.filename]} />
 			</View>
 			<View style={styles.columnRight}>
 				<Text style={styles.nameLabel}>{item.name}</Text>

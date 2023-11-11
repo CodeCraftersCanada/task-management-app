@@ -69,37 +69,6 @@ const Home = React.memo(({ navigation }) => {
 		fetchTasks();
 	};
 
-	// useEffect(() => {
-	// 	const fetchTasks = async () => {
-	// 		try {
-	// 			const completedTasksResponse = await getTasks(
-	// 				token,
-	// 				3,
-	// 				userInfo.user_type_id,
-	// 				userInfo.id
-	// 			);
-	// 			if (completedTasksResponse.data && completedTasksResponse.data.status) {
-	// 				setCompletedTasks(completedTasksResponse.data.tasks);
-	// 			}
-
-	// 			const ongoingTasksResponse = await getTasks(
-	// 				token,
-	// 				2,
-	// 				userInfo.user_type_id,
-	// 				userInfo.id
-	// 			);
-	// 			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
-	// 				setOngoingTasks(ongoingTasksResponse.data.tasks);
-	// 			}
-	// 		} catch (error) {
-	// 			console.log("Error fetching tasks: ", error);
-	// 			// Handle errors as needed
-	// 		}
-	// 	};
-
-	// 	fetchTasks();
-	// }, [token, userInfo.user_type_id, userInfo.id]);
-
 	useEffect(() => {
 		const delayDebounceFn = setTimeout(() => {
 			// Filtering logic

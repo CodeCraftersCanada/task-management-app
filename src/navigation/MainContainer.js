@@ -99,9 +99,11 @@ const MainContainer = ({ navigation }) => {
 		>
 			<Tab.Screen name={homeName} component={HomeScreen} />
 			<Tab.Screen name={billingName} component={BillingScreen} />
-			<Tab.Screen name={newTaskName} component={NewTaskScreen} />
 			{userInfo.user_type_id == 1 && (
-				<Tab.Screen name={memberName} component={MemberScreen} />
+				<>
+					<Tab.Screen name={memberName} component={MemberScreen} />
+					<Tab.Screen name={newTaskName} component={NewTaskScreen} />
+				</>
 			)}
 		</Tab.Navigator>
 	);

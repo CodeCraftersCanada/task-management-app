@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -7,19 +8,48 @@ import {
 	Button,
 	TouchableOpacity,
 	SafeAreaView,
+	ScrollView,
+	Image,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TextArea from "./TextArea";
 import AutoCompleteDropdown from "./AutoCompleteDropdown";
+import { getMembers } from "../services/userService";
+import { useNavigation } from "@react-navigation/native";
+import images from "../utils/imageAssets";
 
 const TaskCreate = () => {
+	const navigation = useNavigation();
+	const userInfo = useSelector((state) => state.auth.user);
+	const token = useSelector((state) => state.auth.token);
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
 		start_date: "",
 		end_date: "",
+		assigned_to: "",
+		created_by: userInfo.id,
+		task_status_id: 1,
 	});
+	const [members, setMembers] = useState([]);
+
+	const fetchMembers = async () => {
+		getMembers(token)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					setMembers(response.data.users);
+				}
+			})
+			.catch((error) => {});
+	};
+	useEffect(() => {
+		const unsubscribe = navigation.addListener("focus", () => {
+			fetchMembers();
+		});
+
+		return unsubscribe;
+	}, [navigation]);
 
 	const handleInputChange = (key, value) => {
 		setFormData((prevState) => ({
@@ -65,7 +95,7 @@ const TaskCreate = () => {
 	}
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={styles.safeView}>
 			<View style={styles.container}>
 				<Text style={styles.fieldLabel}>Task Title</Text>
 				<TextInput
@@ -79,18 +109,6 @@ const TaskCreate = () => {
 					onChangeText={(value) => handleInputChange("description", value)}
 					value={formData.description}
 				/>
-				<Text style={styles.fieldLabel}>Add Team Members</Text>
-				{/* <View style={styles.row}>
-					<View style={styles.columnAutoComplete}></View>
-					<View style={styles.columnIcon}>
-						<TouchableOpacity>
-							<View>
-								<Ionicons name={"add"} size={28} color={"#263238"} />
-							</View>
-						</TouchableOpacity>
-					</View>
-				</View> */}
-				<AutoCompleteDropdown />
 				<View style={styles.row}>
 					<View style={styles.column}>
 						<Text style={styles.fieldLabel}>Start Date</Text>
@@ -151,14 +169,46 @@ const TaskCreate = () => {
 						</View>
 					</View>
 				</View>
+				<Text style={styles.fieldLabel}>Assign Team Member</Text>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={styles.scrollViewContainer}
+				>
+					{members.map((member, index) => (
+						<TouchableOpacity key={member.id}>
+							<Image
+								style={styles.image}
+								source={images[member.filename]}
+								key={member.id}
+							/>
+						</TouchableOpacity>
+					))}
+				</ScrollView>
+
+				<View style={styles.fixedButtonContainer}>
+					<View style={styles.fixedButton}>
+						<Text style={styles.fixedButtonText}>SAVE</Text>
+					</View>
+				</View>
 			</View>
 		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
+	scrollViewContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginBottom: 20,
+	},
+	safeView: {
+		position: "relative",
+	},
 	container: {
 		marginTop: 20,
+		width: "100%",
+		height: "100%",
 	},
 	fieldLabel: {
 		alignSelf: "flex-start",
@@ -240,6 +290,29 @@ const styles = StyleSheet.create({
 		backgroundColor: "#455A64",
 		color: "white",
 		height: 50,
+	},
+	image: {
+		borderRadius: 50,
+		width: 50,
+		height: 50,
+		marginRight: 10,
+	},
+	fixedButtonContainer: {
+		position: "absolute",
+		bottom: 50,
+		left: 5,
+		right: 5,
+	},
+	fixedButton: {
+		backgroundColor: "#FED36A",
+		padding: 10,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	fixedButtonText: {
+		color: "#000",
+		fontSize: 18,
+		fontWeight: "600",
 	},
 });
 

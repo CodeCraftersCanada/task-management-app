@@ -3,9 +3,12 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import ProgressBar from "./ProgressBar";
 import images from "../utils/imageAssets";
 
-const CardComplete = ({ active, task, navigation }) => {
+const CardComplete = ({ active, task, handleUpdate, navigation }) => {
 	const handlePress = (task) => {
-		navigation.navigate("Task Detail", { task: task });
+		navigation.navigate("Task Detail", {
+			task: task,
+			onTaskUpdate: handleUpdate,
+		});
 	};
 
 	return (

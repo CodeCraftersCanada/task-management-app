@@ -30,36 +30,75 @@ const Home = React.memo(({ navigation }) => {
 	const [filteredOngoingTasks, setFilteredOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
-	useEffect(() => {
-		const fetchTasks = async () => {
-			try {
-				const completedTasksResponse = await getTasks(
-					token,
-					3,
-					userInfo.user_type_id,
-					userInfo.id
-				);
-				if (completedTasksResponse.data && completedTasksResponse.data.status) {
-					setCompletedTasks(completedTasksResponse.data.tasks);
-				}
-
-				const ongoingTasksResponse = await getTasks(
-					token,
-					2,
-					userInfo.user_type_id,
-					userInfo.id
-				);
-				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
-					setOngoingTasks(ongoingTasksResponse.data.tasks);
-				}
-			} catch (error) {
-				console.log("Error fetching tasks: ", error);
-				// Handle errors as needed
+	const fetchTasks = async () => {
+		try {
+			const completedTasksResponse = await getTasks(
+				token,
+				3,
+				userInfo.user_type_id,
+				userInfo.id
+			);
+			if (completedTasksResponse.data && completedTasksResponse.data.status) {
+				setCompletedTasks(completedTasksResponse.data.tasks);
 			}
-		};
 
+			const ongoingTasksResponse = await getTasks(
+				token,
+				2,
+				userInfo.user_type_id,
+				userInfo.id
+			);
+			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
+				setOngoingTasks(ongoingTasksResponse.data.tasks);
+			}
+		} catch (error) {
+			console.log("Error fetching tasks: ", error);
+			// Handle errors as needed
+		}
+	};
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener("focus", () => {
+			fetchTasks();
+		});
+
+		return unsubscribe;
+	}, [navigation]);
+
+	const handleUpdate = () => {
 		fetchTasks();
-	}, [token, userInfo.user_type_id, userInfo.id]);
+	};
+
+	// useEffect(() => {
+	// 	const fetchTasks = async () => {
+	// 		try {
+	// 			const completedTasksResponse = await getTasks(
+	// 				token,
+	// 				3,
+	// 				userInfo.user_type_id,
+	// 				userInfo.id
+	// 			);
+	// 			if (completedTasksResponse.data && completedTasksResponse.data.status) {
+	// 				setCompletedTasks(completedTasksResponse.data.tasks);
+	// 			}
+
+	// 			const ongoingTasksResponse = await getTasks(
+	// 				token,
+	// 				2,
+	// 				userInfo.user_type_id,
+	// 				userInfo.id
+	// 			);
+	// 			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
+	// 				setOngoingTasks(ongoingTasksResponse.data.tasks);
+	// 			}
+	// 		} catch (error) {
+	// 			console.log("Error fetching tasks: ", error);
+	// 			// Handle errors as needed
+	// 		}
+	// 	};
+
+	// 	fetchTasks();
+	// }, [token, userInfo.user_type_id, userInfo.id]);
 
 	useEffect(() => {
 		const delayDebounceFn = setTimeout(() => {
@@ -81,7 +120,11 @@ const Home = React.memo(({ navigation }) => {
 	}, [search, completedTasks, ongoingTasks]);
 
 	const renderItem = ({ item }) => (
-		<CardInprogress task={item} navigation={navigation} />
+		<CardInprogress
+			task={item}
+			handleUpdate={handleUpdate}
+			navigation={navigation}
+		/>
 	);
 
 	return (
@@ -146,6 +189,7 @@ const Home = React.memo(({ navigation }) => {
 						<CardComplete
 							active={index === 0}
 							task={task}
+							handleUpdate={handleUpdate}
 							navigation={navigation}
 						/>
 					</View>

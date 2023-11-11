@@ -18,7 +18,11 @@ import images from "../utils/imageAssets";
 import { updateSubTask } from "../services/taskDetailService";
 
 const TaskDetail = ({ route, navigation }) => {
-	const [task, setTask] = useState(route.params.task || {});
+	const { task, onTaskUpdate } = route.params || {
+		task: {},
+		onTaskUpdate: () => {},
+	};
+	const [taskState, setTaskState] = useState(task);
 	const token = useSelector((state) => state.auth.token);
 
 	useLayoutEffect(() => {
@@ -49,7 +53,8 @@ const TaskDetail = ({ route, navigation }) => {
 			updateSubTask(updatedTask.sub_tasks[subtaskIndex], token)
 				.then((response) => {
 					if (response.data && response.data.status) {
-						setTask(updatedTask);
+						setTaskState(updatedTask);
+						onTaskUpdate();
 						Alert.alert("Success", response.data.message);
 					}
 				})

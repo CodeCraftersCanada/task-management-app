@@ -4,16 +4,19 @@ import * as Progress from "react-native-progress";
 import images from "../utils/imageAssets";
 import { formatDate } from "../utils/formatDate";
 
-const CardInprogress = ({ task, navigation }) => {
+const CardInprogress = ({ task, handleUpdate, navigation }) => {
 	const handlePress = (task) => {
-		navigation.navigate("Task Detail", { task: task });
+		navigation.navigate("Task Detail", {
+			task: task,
+			onTaskUpdate: handleUpdate,
+		});
 	};
 
 	const calculatedProgress =
 		task.sub_tasks.length > 0
 			? parseFloat(
 					(
-						task.sub_tasks.filter((subTask) => subTask.task_status_id === 1)
+						task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
 							.length / task.sub_tasks.length
 					).toFixed(2)
 			  )

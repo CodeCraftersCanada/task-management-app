@@ -142,11 +142,11 @@ const TaskDetail = ({ route, navigation }) => {
 		if (calculatedProgress != 1) {
 			Alert.alert("Subtasks are not all mark as complete.");
 		} else {
-			task.task_status_id = 3;
-			updateTask(task, token)
+			taskState.task_status_id = 3;
+			updateTask(taskState, token)
 				.then((response) => {
 					if (response.data && response.data.status) {
-						setTask(task);
+						setTaskState(task);
 						onTaskUpdate();
 						Alert.alert("Success", response.data.message);
 					}
@@ -158,15 +158,23 @@ const TaskDetail = ({ route, navigation }) => {
 	};
 
 	const handleUpdateSubtaskStatus = (subtask, statusId, token) => {
-		const subtaskIndex = task.sub_tasks.findIndex((st) => st.id === subtask.id);
+		const subtaskIndex = taskState.sub_tasks.findIndex(
+			(st) => st.id === subtask.id
+		);
 		if (subtaskIndex !== -1) {
-			const updatedTask = { ...task };
+			// Cloning the sub_tasks array and updating the specific subtask
+			const updatedSubTasks = taskState.sub_tasks.map((st, index) =>
+				index === subtaskIndex ? { ...st, task_status_id: statusId } : st
+			);
 
-			updatedTask.sub_tasks[subtaskIndex].task_status_id = statusId;
-
-			updateSubTask(updatedTask.sub_tasks[subtaskIndex], token)
+			updateSubTask(updatedSubTasks[subtaskIndex], token)
 				.then((response) => {
 					if (response.data && response.data.status) {
+						// Creating a new task object with updated sub_tasks
+						const updatedTask = {
+							...taskState,
+							sub_tasks: updatedSubTasks,
+						};
 						setTaskState(updatedTask);
 						onTaskUpdate();
 						Alert.alert("Success", response.data.message);

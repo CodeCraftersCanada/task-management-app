@@ -20,7 +20,7 @@ const updateTask = (data, token) => {
 			Authorization: `Bearer ${token}`,
 		},
 	};
-
+	console.log("HERERE");
 	return axios.put(`${API_BASE_URL}/api/task/${data.id}`, data, config);
 };
 

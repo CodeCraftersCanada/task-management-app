@@ -30,58 +30,101 @@ const Home = React.memo(({ navigation }) => {
 	const [filteredOngoingTasks, setFilteredOngoingTasks] = useState([]);
 	const [search, setSearch] = useState("");
 
-	useEffect(() => {
-		const fetchTasks = async () => {
-			try {
-				const completedTasksResponse = await getTasks(
-					token,
-					3,
-					userInfo.user_type_id,
-					userInfo.id
-				);
-				if (completedTasksResponse.data && completedTasksResponse.data.status) {
-					setCompletedTasks(completedTasksResponse.data.tasks);
-					setFilteredCompletedTasks(completedTasksResponse.data.tasks);
-				}
-
-				const ongoingTasksResponse = await getTasks(
-					token,
-					2,
-					userInfo.user_type_id,
-					userInfo.id
-				);
-				if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
-					setOngoingTasks(ongoingTasksResponse.data.tasks);
-					setFilteredOngoingTasks(ongoingTasksResponse.data.tasks);
-				}
-			} catch (error) {
-				console.log("Error fetching tasks: ", error);
-				// You can handle errors by setting some state and showing it in the UI if needed
+	const fetchTasks = async () => {
+		try {
+			const completedTasksResponse = await getTasks(
+				token,
+				3,
+				userInfo.user_type_id,
+				userInfo.id
+			);
+			if (completedTasksResponse.data && completedTasksResponse.data.status) {
+				setCompletedTasks(completedTasksResponse.data.tasks);
 			}
-		};
 
-		fetchTasks();
-	}, [token, userInfo.user_type_id, userInfo.id]);
-
-	// useEffect(() => {
-	// 	const results = [...completedTasks, ...ongoingTasks].filter((task) => {
-	// 		return task.title.includes(search);
-	// 	});
-
-	// 	setFilteredCompletedTasks(
-	// 		results.filter((task) => task.task_status_id === 3)
-	// 	);
-	// 	setFilteredOngoingTasks(
-	// 		results.filter((task) => task.task_status_id === 2)
-	// 	);
-	// }, [search]);
-
-	const handleSearchChange = () => {
-		console.log("search");
+			const ongoingTasksResponse = await getTasks(
+				token,
+				2,
+				userInfo.user_type_id,
+				userInfo.id
+			);
+			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
+				setOngoingTasks(ongoingTasksResponse.data.tasks);
+			}
+		} catch (error) {
+			console.log("Error fetching tasks: ", error);
+			// Handle errors as needed
+		}
 	};
 
+	useEffect(() => {
+		const unsubscribe = navigation.addListener("focus", () => {
+			fetchTasks();
+		});
+
+		return unsubscribe;
+	}, [navigation]);
+
+	const handleUpdate = () => {
+		fetchTasks();
+	};
+
+	// useEffect(() => {
+	// 	const fetchTasks = async () => {
+	// 		try {
+	// 			const completedTasksResponse = await getTasks(
+	// 				token,
+	// 				3,
+	// 				userInfo.user_type_id,
+	// 				userInfo.id
+	// 			);
+	// 			if (completedTasksResponse.data && completedTasksResponse.data.status) {
+	// 				setCompletedTasks(completedTasksResponse.data.tasks);
+	// 			}
+
+	// 			const ongoingTasksResponse = await getTasks(
+	// 				token,
+	// 				2,
+	// 				userInfo.user_type_id,
+	// 				userInfo.id
+	// 			);
+	// 			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
+	// 				setOngoingTasks(ongoingTasksResponse.data.tasks);
+	// 			}
+	// 		} catch (error) {
+	// 			console.log("Error fetching tasks: ", error);
+	// 			// Handle errors as needed
+	// 		}
+	// 	};
+
+	// 	fetchTasks();
+	// }, [token, userInfo.user_type_id, userInfo.id]);
+
+	useEffect(() => {
+		const delayDebounceFn = setTimeout(() => {
+			// Filtering logic
+			const allTasks = [...completedTasks, ...ongoingTasks];
+			const filteredResults = allTasks.filter((task) =>
+				task.title.includes(search)
+			);
+
+			setFilteredCompletedTasks(
+				filteredResults.filter((task) => task.task_status_id === 3)
+			);
+			setFilteredOngoingTasks(
+				filteredResults.filter((task) => task.task_status_id === 2)
+			);
+		}, 500); // 500ms delay
+
+		return () => clearTimeout(delayDebounceFn);
+	}, [search, completedTasks, ongoingTasks]);
+
 	const renderItem = ({ item }) => (
-		<CardInprogress task={item} navigation={navigation} />
+		<CardInprogress
+			task={item}
+			handleUpdate={handleUpdate}
+			navigation={navigation}
+		/>
 	);
 
 	return (
@@ -113,7 +156,7 @@ const Home = React.memo(({ navigation }) => {
 							style={styles.input}
 							placeholder="Search tasks"
 							placeholderTextColor="#6F8793"
-							onChangeText={handleSearchChange}
+							onChangeText={setSearch}
 							value={search}
 						/>
 					</View>
@@ -146,6 +189,7 @@ const Home = React.memo(({ navigation }) => {
 						<CardComplete
 							active={index === 0}
 							task={task}
+							handleUpdate={handleUpdate}
 							navigation={navigation}
 						/>
 					</View>

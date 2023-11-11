@@ -1,4 +1,5 @@
-import React, { useEffect, useContext, useLayoutEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	StyleSheet,
 	View,
@@ -6,26 +7,166 @@ import {
 	SafeAreaView,
 	Image,
 	TouchableOpacity,
+	TextInput,
+	ScrollView,
+	Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Progress from "react-native-progress";
+import { formatDate } from "../utils/formatDate";
+import images from "../utils/imageAssets";
+import {
+	updateSubTask,
+	updateTask,
+	addSubtask,
+} from "../services/taskDetailService";
 
-const TaskDetail = ({ route, navigation, task }) => {
-	const { status } = route.params || { status: "completed" };
-
-	const handleAdd = () => {
-		console.log("handleAdd");
+const TaskDetail = ({ route, navigation }) => {
+	const { task, onTaskUpdate } = route.params || {
+		task: {},
+		onTaskUpdate: () => {},
 	};
+	const [taskState, setTaskState] = useState(task);
+	const userInfo = useSelector((state) => state.auth.user);
+	const token = useSelector((state) => state.auth.token);
+	const [showAddSubtaskInput, setShowAddSubtaskInput] = useState(false);
+	const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
+	const [calculatedProgress, setCalculatedProgress] = useState(0);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ headerTitle: "Task Detail" });
 	}, [navigation]);
 
+	useEffect(() => {
+		const newProgress =
+			taskState.sub_tasks.length > 0
+				? parseFloat(
+						(
+							taskState.sub_tasks.filter(
+								(subTask) => subTask.task_status_id === 2
+							).length / taskState.sub_tasks.length
+						).toFixed(2)
+				  )
+				: 0;
+		setCalculatedProgress(newProgress);
+	}, [taskState]);
+
+	// const calculatedProgress =
+	// 	task.sub_tasks.length > 0
+	// 		? parseFloat(
+	// 				(
+	// 					task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
+	// 						.length / task.sub_tasks.length
+	// 				).toFixed(2)
+	// 		  )
+	// 		: 0;
+
+	const handleAdd = (title, token) => {
+		const newSubtask = {
+			title: title,
+			task_id: taskState.id, // Assuming this should be taskState.id, not task.id
+			task_status_id: 1,
+			created_by: userInfo.id,
+			assigned_to: userInfo.id,
+			task_hours: 0,
+		};
+
+		addSubtask(newSubtask, token)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					// Create a new task object with updated sub_tasks
+					const newSubtaskFromResponse = response.data.subTask;
+					const updatedTask = {
+						...taskState,
+						sub_tasks: [...taskState.sub_tasks, newSubtaskFromResponse],
+					};
+					setTaskState(updatedTask);
+					onTaskUpdate();
+					setShowAddSubtaskInput(false);
+					setNewSubtaskTitle("");
+					Alert.alert("Success", response.data.message);
+				}
+			})
+			.catch((error) => {
+				console.error("Error adding subtask:", error);
+				Alert.alert(
+					"Error",
+					"Failed to add subtask: " +
+						(error.response ? error.response.data.message : error.message)
+				);
+			});
+	};
+
+	const handleUpdateTaskStatus = () => {
+		if (calculatedProgress != 1) {
+			Alert.alert("Subtasks are not all mark as complete.");
+		} else {
+			task.task_status_id = 3;
+			updateTask(task, token)
+				.then((response) => {
+					if (response.data && response.data.status) {
+						setTask(task);
+						onTaskUpdate();
+						Alert.alert("Success", response.data.message);
+					}
+				})
+				.catch((error) => {
+					Alert.alert("Error", "Failed to update task!");
+				});
+		}
+	};
+
+	const handleUpdateSubtaskStatus = (subtask, statusId, token) => {
+		const subtaskIndex = task.sub_tasks.findIndex((st) => st.id === subtask.id);
+		if (subtaskIndex !== -1) {
+			const updatedTask = { ...task };
+
+			updatedTask.sub_tasks[subtaskIndex].task_status_id = statusId;
+
+			updateSubTask(updatedTask.sub_tasks[subtaskIndex], token)
+				.then((response) => {
+					if (response.data && response.data.status) {
+						setTaskState(updatedTask);
+						onTaskUpdate();
+						Alert.alert("Success", response.data.message);
+					}
+				})
+				.catch((error) => {
+					Alert.alert("Error", "Failed to update task!");
+				});
+		}
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.row}>
-					<Text style={styles.taskTitle}>Real Estate App Design</Text>
+					<View style={styles.cardLeft}>
+						<Text style={styles.taskTitle}>{task.title}</Text>
+					</View>
+					<View style={styles.cardRight}>
+						<View>
+							{task.task_status_id == 3 ? (
+								<TouchableOpacity>
+									<Ionicons
+										name={"checkmark-circle-outline"}
+										size={28}
+										color={"#FED36A"}
+									/>
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity
+									onPress={() => handleUpdateTaskStatus(task, token)}
+								>
+									<Ionicons
+										name={"ellipse-outline"}
+										size={24}
+										color={"white"}
+									/>
+								</TouchableOpacity>
+							)}
+						</View>
+					</View>
 				</View>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>
@@ -37,7 +178,9 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Due Date</Text>
-								<Text style={styles.mediumLabel}>20 June</Text>
+								<Text style={styles.mediumLabel}>
+									{formatDate(task.end_date)}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -52,7 +195,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 								<Text style={styles.smallLabel}>Project Team</Text>
 								<Image
 									style={styles.image}
-									source={require("../assets/img/dummy.png")}
+									source={images[task.assigned.filename]}
 								/>
 							</View>
 						</View>
@@ -72,7 +215,7 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Hours</Text>
-								<Text style={styles.mediumLabel}>04:30:00</Text>
+								<Text style={styles.mediumLabel}>{task.task_hours}</Text>
 							</View>
 						</View>
 					</View>
@@ -85,7 +228,9 @@ const TaskDetail = ({ route, navigation, task }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Cost</Text>
-								<Text style={styles.mediumLabel}>$340.00</Text>
+								<Text style={styles.mediumLabel}>
+									${task.task_hours * task.assigned.hourly_rate}
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -94,73 +239,126 @@ const TaskDetail = ({ route, navigation, task }) => {
 					<Text style={styles.taskDescription}>Task Description</Text>
 				</View>
 				<View style={styles.row}>
-					<Text style={styles.taskDescriptionContent}>
-						Lorem Ipsum is simply dummy text of the printing and typesetting
-						industry. Lorem Ipsum has been the industry's standard dummy text
-						ever since the 1500s, when an unknown printer took a galley of type
-						and scrambled
-					</Text>
+					<Text style={styles.taskDescriptionContent}>{task.description}</Text>
 				</View>
 				<View style={styles.row}>
 					<View style={[styles.columnLeft, styles.columnLeftProgress]}>
 						<Text style={styles.taskDescription}>Project Progress</Text>
 					</View>
 					<View style={[styles.columnRight, styles.columnRightProgress]}>
-						<Progress.Circle
-							size={90}
-							progress={0.3}
-							showsText={true}
-							thickness={3}
-							color={"#FED36A"}
-							unfilledColor={"#263238"}
-							borderColor={"#263238"}
-							textStyle={{
-								color: "white",
-							}}
-							direction={"clockwise"}
-						/>
+						{task.task_status_id < 3 && (
+							<Progress.Circle
+								size={70}
+								progress={calculatedProgress}
+								showsText={true}
+								thickness={3}
+								color={"#FED36A"}
+								unfilledColor={"#263238"}
+								borderColor={"#263238"}
+								textStyle={{
+									color: "white",
+								}}
+								direction={"clockwise"}
+								formatText={(progress) => {
+									const percent = (progress * 100).toFixed(0);
+									return `${percent}%`;
+								}}
+								key={calculatedProgress}
+								animated={false}
+							/>
+						)}
+						{task.task_status_id == 3 && (
+							<Progress.Circle
+								size={90}
+								progress={calculatedProgress}
+								showsText={true}
+								thickness={3}
+								color={"#FED36A"}
+								unfilledColor={"#263238"}
+								borderColor={"#263238"}
+								textStyle={{
+									color: "white",
+								}}
+								direction={"clockwise"}
+								formatText={(progress) => {
+									const percent = (1 * 100).toFixed(0);
+									return `${percent}%`;
+								}}
+								animated={false}
+							/>
+						)}
 					</View>
 				</View>
 				<View style={styles.row}>
-					<Text style={styles.taskDescription}>All Tasks</Text>
+					<View style={styles.cardLeft}>
+						<Text style={styles.taskDescription}>All Tasks</Text>
+					</View>
+					<View style={styles.cardRight}>
+						{task.task_status_id < 3 && (
+							<View>
+								<TouchableOpacity onPress={() => setShowAddSubtaskInput(true)}>
+									<Ionicons name={"add-outline"} size={28} color={"white"} />
+								</TouchableOpacity>
+							</View>
+						)}
+					</View>
 				</View>
-				<View style={styles.row}>
-					<View style={styles.card}>
-						<View style={styles.cardLeft}>
-							<Text style={styles.taskDescription}>User Interviews</Text>
-						</View>
-						<View style={styles.cardRight}>
-							<View style={styles.cardRightIcon}>
-								<Ionicons
-									name={"ellipse-outline"}
-									size={28}
-									color={"#263238"}
-								/>
+				{showAddSubtaskInput && (
+					<TextInput
+						style={styles.input}
+						placeholder="Enter subtask title"
+						placeholderTextColor="#6F8793"
+						onChangeText={setNewSubtaskTitle}
+						value={newSubtaskTitle}
+						onBlur={() => handleAdd(newSubtaskTitle, token)}
+					/>
+				)}
+				<ScrollView
+					vertical
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={styles.scrollViewContainer}
+				>
+					{taskState.sub_tasks.map((subtask, index) => (
+						<View style={styles.row} key={subtask.id}>
+							<View style={styles.card}>
+								<View style={styles.cardLeft}>
+									<Text style={styles.taskDescription}>{subtask.title}</Text>
+								</View>
+								<View style={styles.cardRight}>
+									<View style={styles.cardRightIcon}>
+										{subtask.task_status_id == 2 ? (
+											<TouchableOpacity
+												style={styles.fixedButton}
+												onPress={() =>
+													handleUpdateSubtaskStatus(subtask, 1, token)
+												}
+											>
+												<Ionicons
+													name={"checkmark-circle-outline"}
+													size={24}
+													color={"#263238"}
+												/>
+											</TouchableOpacity>
+										) : (
+											<TouchableOpacity
+												style={styles.fixedButton}
+												onPress={() =>
+													handleUpdateSubtaskStatus(subtask, 2, token)
+												}
+											>
+												<Ionicons
+													name={"ellipse-outline"}
+													size={24}
+													color={"#263238"}
+												/>
+											</TouchableOpacity>
+										)}
+									</View>
+								</View>
 							</View>
 						</View>
-					</View>
-				</View>
-				<View style={styles.row}>
-					<View style={styles.card}>
-						<View style={styles.cardLeft}>
-							<Text style={styles.taskDescription}>Wireframes</Text>
-						</View>
-						<View style={styles.cardRight}>
-							<View style={styles.cardRightIcon}>
-								<Ionicons
-									name={"checkmark-circle-outline"}
-									size={28}
-									color={"#263238"}
-								/>
-							</View>
-						</View>
-					</View>
-				</View>
-			</View>
-			<View style={styles.fixedButtonContainer}>
-				<TouchableOpacity style={styles.fixedButton} onPress={handleAdd}>
-					<Text style={styles.fixedButtonText}>Add Task</Text>
-				</TouchableOpacity>
+					))}
+				</ScrollView>
 			</View>
 		</SafeAreaView>
 	);
@@ -276,7 +474,7 @@ const styles = StyleSheet.create({
 	},
 	fixedButton: {
 		backgroundColor: "#FED36A",
-		padding: 15,
+		padding: 0,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -284,6 +482,17 @@ const styles = StyleSheet.create({
 		color: "#000",
 		fontSize: 18,
 		fontWeight: "600",
+	},
+	input: {
+		marginBottom: 10,
+		height: 40,
+		borderWidth: 0,
+		paddingHorizontal: 12,
+		paddingVertical: 12,
+		width: "100%",
+		backgroundColor: "#455A64",
+		color: "#FFFFFF",
+		fontSize: 18,
 	},
 });
 

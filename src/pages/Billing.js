@@ -8,7 +8,9 @@ import {
 	TextInput,
 	Image,
 	TouchableOpacity,
-	FlatList
+	FlatList,
+	ScrollView,
+	KeyboardAvoidingView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
@@ -84,42 +86,52 @@ const Billing = () => {
 		navigation.navigate("Billing Detail");
 	};
 
+	const handleAdd = () => {
+		navigation.navigate("Billing Create");
+	};
+
 	return (
-		<SafeAreaView>
-			<View style={styles.container}>
-				<View style={styles.row}>
-					<View style={styles.columnLeftLabel}>
-						<View style={styles.fieldWrapper}>
-							<Ionicons
-								style={styles.fieldIconLeft}
-								name={"search-outline"}
-								size={24}
-								color={"#6F8793"}
-							/>
-							<TextInput
-								style={styles.input}
-								placeholder="Search tasks"
-								placeholderTextColor="#6F8793"
-								onChangeText={(value) => handleSearchChange(value)}
-								value={search}
+			<SafeAreaView>
+					<View style={styles.container}>
+						<View style={styles.row}>
+							<View style={styles.columnLeftLabel}>
+								<View style={styles.fieldWrapper}>
+									<Ionicons
+										style={styles.fieldIconLeft}
+										name={"search-outline"}
+										size={24}
+										color={"#6F8793"}
+									/>
+									<TextInput
+										style={styles.input}
+										placeholder="Search tasks"
+										placeholderTextColor="#6F8793"
+										onChangeText={(value) => handleSearchChange(value)}
+										value={search}
+									/>
+								</View>
+							</View>
+							<View style={styles.filterColumn}>
+								<Ionicons name={"filter-outline"} size={24} color={"#6F8793"} />
+							</View>
+						</View>
+
+						<View>
+							<FlatList
+								data={filteredList}
+								renderItem={renderItem}
+								keyExtractor={(item) => item.id}
+								contentContainerStyle={{ paddingBottom: 20 }}
 							/>
 						</View>
-					</View>
-					<View style={styles.filterColumn}>
-						<Ionicons name={"filter-outline"} size={24} color={"#6F8793"} />
-					</View>
-				</View>
 
-				<View>
-					<FlatList
-						data={filteredList}
-						renderItem={renderItem}
-						keyExtractor={(item) => item.id}
-						contentContainerStyle={{ paddingBottom: 20 }}
-					/>
-				</View>
-			</View>
-		</SafeAreaView>
+						<TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+							<View style={styles.addIcon}>
+								<Ionicons name="add" size={24} color="#000" />
+							</View>
+      					</TouchableOpacity>
+					</View>
+			</SafeAreaView>
 	);
 };
 
@@ -212,6 +224,24 @@ const styles = StyleSheet.create({
 		fontWeight: "400",
 		color: "#D2D2D2",
 	},
+	addButton: {
+		position: 'absolute',
+		bottom: 20,
+		left: '50%',
+		transform: [{ translateX: -30 }],
+		backgroundColor: '#FED36A',
+		padding: 15,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 50,
+		width: 60,
+		height: 60,
+		zIndex: 1,
+	  },
+	  addIcon: {
+		justifyContent: 'center',
+		alignItems: 'center',
+	  },
 });
 
 export default Billing;

@@ -5,6 +5,7 @@ import MainContainer from "../navigation/MainContainer";
 import Login from "../features/authentication/Login";
 import Register from "../features/authentication/Register";
 import SettingScreen from "../navigation/screens/SettingScreen";
+import NewBillingScreen from "../navigation/screens/NewBillingScreen";
 import TaskList from "./TaskList";
 import TaskDetail from "./TaskDetail";
 import BillingDetail from "./BillingDetail";
@@ -57,6 +58,11 @@ const AppContainer = () => {
 							name="Login"
 							component={Login}
 							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="Billing Create"
+							component={NewBillingScreen}
+							options={{ headerBackTitle: "Back" }}
 						/>
 					</>
 				) : (

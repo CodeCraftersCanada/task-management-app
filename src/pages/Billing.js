@@ -13,7 +13,7 @@ import {
 	KeyboardAvoidingView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getInvoices } from "../services/billingService";
 import images from "../utils/imageAssets";
 
@@ -25,22 +25,40 @@ const Billing = () => {
 	const [filteredList, setFilteredList] = useState([]);
 	const navigation = useNavigation();
 
-	useEffect(() => {
-		const fetchInvoices = async () => {
-			try {
-				const invoicesData = await getInvoices(token);
-				if (invoicesData.data && invoicesData.data.status) {
-					setInvoiceList(invoicesData.data.invoices);
-					setFilteredList(invoicesData.data.invoices);
-				}
-			} catch (error) {
-				console.log("Error fetching invoices list: ", error);
-				// You can handle errors by setting some state and showing it in the UI if needed
-			}
-		};
+	// useEffect(() => {
+	// 	const fetchInvoices = async () => {
+	// 		try {
+	// 			const invoicesData = await getInvoices(token);
+	// 			if (invoicesData.data && invoicesData.data.status) {
+	// 				setInvoiceList(invoicesData.data.invoices);
+	// 				setFilteredList(invoicesData.data.invoices);
+	// 			}
+	// 		} catch (error) {
+	// 			console.log("Error fetching invoices list: ", error);
+	// 			// You can handle errors by setting some state and showing it in the UI if needed
+	// 		}
+	// 	};
 
-		fetchInvoices();
-	}, [token]);
+	// 	fetchInvoices();
+	// }, [token]);
+
+	useFocusEffect(
+		React.useCallback(() => {
+			const fetchInvoices = async () => {
+				try {
+					const invoicesData = await getInvoices(token);
+					if (invoicesData.data && invoicesData.data.status) {
+						setInvoiceList(invoicesData.data.invoices);
+						setFilteredList(invoicesData.data.invoices);
+					}
+				} catch (error) {
+					console.log("Error fetching invoices list: ", error);
+					// You can handle errors by setting some state and showing it in the UI if needed
+				}
+			};
+			fetchInvoices();
+		}, [token]) // Fetch on every focus change and token change
+	);
 
 	console.log("Invoices List: ", invoiceList);
 

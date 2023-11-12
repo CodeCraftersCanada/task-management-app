@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
 	StyleSheet,
@@ -9,13 +9,18 @@ import {
 	TouchableOpacity,
 	Text,
 	Alert,
+    Modal
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { getTasks } from "../services/homeService";
+import { addInvoice } from "../services/billingService";
 
 const BillingCreate = () => {
 	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [tasks, setTasks] = useState([]);
 
 	const [formData, setFormData] = useState({
 	});
@@ -27,38 +32,114 @@ const BillingCreate = () => {
 		}));
 	};
 
+    const handleTaskSelect = (selectedTask) => {
+		console.log("selected task: ", selectedTask);
+		setFormData((prevState) => ({
+			...prevState,
+			task_id: selectedTask.id, // Assuming task object has an ID
+			total_hours: selectedTask.task_hours,
+			hourly_rate: selectedTask.assigned.hourly_rate,
+			amount: (selectedTask.task_hours * selectedTask.assigned.hourly_rate).toString(),
+			paid_to: selectedTask.assigned.id,
+			paid_to_name: selectedTask.assigned.name,
+			created_by: userInfo.id
+
+		}));
+		setShowDropdown(false); // Close the dropdown after selection
+	};
+
 	const handleSubmit = () => {
 		console.log("handleSubmit ");
+		addInvoice(formData, token)
+		.then((response) => {
+			if (response.data && response.data.status) {
+				Alert.alert("Success", response.data.message);
+				setFormData({
+					task_id: "",
+					total_hours: "",
+					hourly_rate: "",
+					amount: "",
+					paid_to: "",
+					paid_to_name: "",
+					created_by: ""
+				});
+				navigation.navigate("Billing");
+			}
+		})
+		.catch((error) => {
+			console.error("Error adding subtask:", error);
+		});
 	};
 
 	const navigation = useNavigation();
+	console.log("formdata: ", formData);
+
+    useEffect(() => {
+		getTasks(token, 0, 0, 0)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					setTasks(response.data.tasks);
+				}
+			})
+			.catch((error) => {
+				// Handle error appropriately
+			});
+	}, [token, 0, 0 , 0]);
+    console.log("tasks list: ", tasks);
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
 				<View style={styles.settingContainer}>
-
                     <View style={styles.fieldWrapper}>
-						<Ionicons
-							style={[styles.fieldIconLeft, styles.emailIcon]}
-							name={"mail-outline"}
-							size={24}
-							color={"#8CAAB9"}
-						/>
-						<TextInput
-							style={styles.input}
-							placeholder="Task"
-							placeholderTextColor="#6F8793"
-							onChangeText={(value) => handleInputChange("task_id", value)}
-							value={formData.task_id}
-						/>
-						<Ionicons
-							style={styles.fieldIconRight}
-							name={"create-outline"}
-							size={24}
-							color={"#8CAAB9"}
-						/>
-					</View>
+                        <View style={styles.settingContainer}>
+                            <Ionicons
+                                style={styles.fieldIconLeft}
+                                name={"mail-outline"}
+                                size={24}
+                                color={"#8CAAB9"}
+                            />
+                            <TouchableOpacity
+                                style={styles.dropdownHeader}
+                                onPress={() => setShowDropdown(!showDropdown)}
+                            >
+                                <Text style={styles.input}>
+                                {formData.task_id ? (
+                                    tasks.find((task) => task.id === formData.task_id)?.title ||
+                                    "Select Task"
+                                ) : (
+                                    "Select Task"
+                                )}
+                                </Text>
+                                <Ionicons
+                                style={styles.fieldIconRight}
+                                name={"create-outline"}
+                                size={24}
+                                color={"#8CAAB9"}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <Modal
+                        visible={showDropdown}
+                        animationType="slide"
+                        transparent={true}
+                        onRequestClose={() => setShowDropdown(false)}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                {tasks.map((task) => (
+                                <TouchableOpacity
+                                    key={task.id}
+                                    style={styles.dropdownItem}
+                                    onPress={() => handleTaskSelect(task)}
+                                >
+                                    <Text>{task.title}</Text>
+                                </TouchableOpacity>
+                                ))}
+                            </View>
+                        </View>
+                    </Modal>
 					<View style={styles.fieldWrapper}>
 						<Ionicons
 							style={styles.fieldIconLeft}
@@ -70,8 +151,9 @@ const BillingCreate = () => {
 							style={styles.input}
 							placeholder="Paid To"
 							placeholderTextColor="#6F8793"
-							onChangeText={(value) => handleInputChange("paid_to", value)}
-							value={formData.paid_to}
+							onChangeText={(value) => handleInputChange("paid_to_name", value)}
+							value={formData.paid_to_name}
+							editable={false}
 						/>
 						<Ionicons
 							style={styles.fieldIconRight}
@@ -94,6 +176,7 @@ const BillingCreate = () => {
 							placeholderTextColor="#6F8793"
 							onChangeText={(value) => handleInputChange("total_hours", value)}
 							value={formData.total_hours}
+							editable={false}
 						/>
 						<Ionicons
 							style={styles.fieldIconRight}
@@ -116,6 +199,7 @@ const BillingCreate = () => {
 							placeholderTextColor="#6F8793"
 							onChangeText={(value) => handleInputChange("hourly_rate", value)}
 							value={formData.hourly_rate}
+							editable={false}
 						/>
 						<Ionicons
 							style={styles.fieldIconRight}
@@ -137,7 +221,7 @@ const BillingCreate = () => {
 							placeholder="Amount"
 							placeholderTextColor="#6F8793"
 							onChangeText={(value) => handleInputChange("amount", value)}
-							value={formData.hourly_rate}
+							value={formData.amount}
 						/>
 						<Ionicons
 							style={styles.fieldIconRight}
@@ -221,12 +305,10 @@ const styles = StyleSheet.create({
 		color: "#FFFFFF",
 		fontSize: 18,
 	},
-	fieldWrapper: {
-		marginTop: 26,
-		width: "auto",
-		position: "relative",
-		borderWidth: 1,
-	},
+    fieldWrapper: {
+        position: "relative",
+        marginBottom: 26,
+    },
 	fieldIconLeft: {
 		position: "absolute",
 		left: 16,
@@ -264,6 +346,23 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		alignItems: "flex-end",
 	},
+    modalContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContent: {
+        width: "80%",
+        backgroundColor: "#fff",
+        padding: 10,
+        borderRadius: 10,
+    },
+    dropdownItem: {
+        padding: 15,
+        borderBottomWidth: 1,
+        borderColor: "#ccc",
+    },
 });
 
 export default BillingCreate;

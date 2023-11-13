@@ -111,7 +111,10 @@ const TaskDetail = ({ route, navigation }) => {
 			assigned_to: userInfo.id,
 			task_hours: 0,
 		};
-
+		if (taskState.parent_id && taskState.task_status_id != 3) {
+			Alert.alert("Parent task not completed yet!");
+			return;
+		}
 		addSubtask(newSubtask, token)
 			.then((response) => {
 				if (response.data && response.data.status) {
@@ -142,6 +145,10 @@ const TaskDetail = ({ route, navigation }) => {
 		if (userInfo.user_type_id == 1) {
 			return;
 		}
+		if (taskState.parent_id && taskState.task_status_id != 3) {
+			Alert.alert("Parent task not completed yet!");
+			return;
+		}
 		if (calculatedProgress != 1) {
 			Alert.alert("Subtasks are not all mark as complete.");
 		} else {
@@ -164,6 +171,12 @@ const TaskDetail = ({ route, navigation }) => {
 		if (userInfo.user_type_id == 1) {
 			return;
 		}
+
+		if (taskState.parent_id && taskState.task_status_id != 3) {
+			Alert.alert("Parent task not completed yet!");
+			return;
+		}
+
 		const subtaskIndex = taskState.sub_tasks.findIndex(
 			(st) => st.id === subtask.id
 		);
@@ -261,7 +274,11 @@ const TaskDetail = ({ route, navigation }) => {
 								{!isTaskInProgress && (
 									<TouchableOpacity
 										style={styles.fixedButton}
-										onPress={() => setIsTaskInProgress(true)}
+										onPress={() =>
+											taskState.parent_id && taskState.task_status_id != 3
+												? Alert.alert("Parent task not completed yet!")
+												: setIsTaskInProgress(true)
+										}
 									>
 										<Ionicons
 											name={"play-circle-outline"}
@@ -288,7 +305,7 @@ const TaskDetail = ({ route, navigation }) => {
 						)}
 
 						<View style={styles.cardRightIcon}>
-							{task.task_status_id == 3 ? (
+							{taskState.task_status_id == 3 ? (
 								<TouchableOpacity style={styles.fixedButton}>
 									<Ionicons
 										name={"checkmark-circle-outline"}
@@ -299,7 +316,7 @@ const TaskDetail = ({ route, navigation }) => {
 							) : (
 								<TouchableOpacity
 									style={styles.fixedButton}
-									onPress={() => handleUpdateTaskStatus(task, token)}
+									onPress={() => handleUpdateTaskStatus(taskState, token)}
 								>
 									<Ionicons
 										name={"ellipse-outline"}
@@ -458,7 +475,13 @@ const TaskDetail = ({ route, navigation }) => {
 					<View style={styles.cardRight}>
 						{task.task_status_id < 3 && userInfo.user_type_id == 2 && (
 							<View>
-								<TouchableOpacity onPress={() => setShowAddSubtaskInput(true)}>
+								<TouchableOpacity
+									onPress={() =>
+										taskState.parent_id && taskState.task_status_id != 3
+											? Alert.alert("Parent task not completed yet!")
+											: setShowAddSubtaskInput(true)
+									}
+								>
 									<Ionicons name={"add-outline"} size={28} color={"white"} />
 								</TouchableOpacity>
 							</View>

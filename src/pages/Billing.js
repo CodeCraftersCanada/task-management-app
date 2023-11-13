@@ -8,9 +8,7 @@ import {
 	TextInput,
 	Image,
 	TouchableOpacity,
-	FlatList,
-	ScrollView,
-	KeyboardAvoidingView
+	FlatList
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -20,27 +18,11 @@ import images from "../utils/imageAssets";
 
 const Billing = () => {
 	const [search, setSearch] = useState("");
+	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
 	const [invoiceList, setInvoiceList] = useState([]);
 	const [filteredList, setFilteredList] = useState([]);
 	const navigation = useNavigation();
-
-	// useEffect(() => {
-	// 	const fetchInvoices = async () => {
-	// 		try {
-	// 			const invoicesData = await getInvoices(token);
-	// 			if (invoicesData.data && invoicesData.data.status) {
-	// 				setInvoiceList(invoicesData.data.invoices);
-	// 				setFilteredList(invoicesData.data.invoices);
-	// 			}
-	// 		} catch (error) {
-	// 			console.log("Error fetching invoices list: ", error);
-	// 			// You can handle errors by setting some state and showing it in the UI if needed
-	// 		}
-	// 	};
-
-	// 	fetchInvoices();
-	// }, [token]);
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -143,11 +125,13 @@ const Billing = () => {
 							/>
 						</View>
 
-						<TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-							<View style={styles.addIcon}>
-								<Ionicons name="add" size={24} color="#000" />
-							</View>
-      					</TouchableOpacity>
+						{userInfo.user_type_id === 1 && (
+							<TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+								<View style={styles.addIcon}>
+									<Ionicons name="add" size={24} color="#000" />
+								</View>
+							</TouchableOpacity>
+						)}
 					</View>
 			</SafeAreaView>
 	);

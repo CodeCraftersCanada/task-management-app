@@ -156,7 +156,10 @@ const TaskDetail = ({ route, navigation }) => {
 			updateTask(taskState, token)
 				.then((response) => {
 					if (response.data && response.data.status) {
-						setTaskState(taskState);
+						setTaskState((prevState) => ({
+							...prevState,
+							task_status_id: 3,
+						}));
 						onTaskUpdate();
 						Alert.alert("Success", response.data.message);
 					}
@@ -273,7 +276,8 @@ const TaskDetail = ({ route, navigation }) => {
 									<Ionicons name={"link-outline"} size={28} color={"yellow"} />{" "}
 									#{taskState.parent_id}
 								</>
-							)}
+							)}{" "}
+							{taskState.task_status_id}
 						</Text>
 					</View>
 					<View style={styles.cardRight}>

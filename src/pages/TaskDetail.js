@@ -111,7 +111,7 @@ const TaskDetail = ({ route, navigation }) => {
 			assigned_to: userInfo.id,
 			task_hours: 0,
 		};
-		if (taskState.parent_id && taskState.task_status_id != 3) {
+		if (taskState.parent_id && taskState.parent_task.task_status_id != 3) {
 			Alert.alert("Parent task not completed yet!");
 			return;
 		}
@@ -145,7 +145,7 @@ const TaskDetail = ({ route, navigation }) => {
 		if (userInfo.user_type_id == 1) {
 			return;
 		}
-		if (taskState.parent_id && taskState.task_status_id != 3) {
+		if (taskState.parent_id && taskState.parent_task.task_status_id != 3) {
 			Alert.alert("Parent task not completed yet!");
 			return;
 		}
@@ -172,7 +172,7 @@ const TaskDetail = ({ route, navigation }) => {
 			return;
 		}
 
-		if (taskState.parent_id && taskState.task_status_id != 3) {
+		if (taskState.parent_id && taskState.parent_task.task_status_id != 3) {
 			Alert.alert("Parent task not completed yet!");
 			return;
 		}
@@ -266,18 +266,27 @@ const TaskDetail = ({ route, navigation }) => {
 			<View style={styles.wrapper}>
 				<View style={styles.row}>
 					<View style={styles.cardLeft}>
-						<Text style={styles.taskTitle}>{task.title}</Text>
+						<Text style={styles.taskTitle}>
+							{task.title}{" "}
+							{taskState.parent_id && (
+								<>
+									<Ionicons name={"link-outline"} size={28} color={"yellow"} />{" "}
+									#{taskState.parent_id}
+								</>
+							)}
+						</Text>
 					</View>
 					<View style={styles.cardRight}>
-						{task.task_status_id < 3 && userInfo.user_type_id == 2 && (
+						{taskState.task_status_id < 3 && userInfo.user_type_id == 2 && (
 							<View style={(styles.cardRightIcon, styles.marginRight5)}>
 								{!isTaskInProgress && (
 									<TouchableOpacity
 										style={styles.fixedButton}
 										onPress={() =>
-											taskState.parent_id && taskState.task_status_id != 3
+											taskState.parent_id &&
+											taskState.parent_task.task_status_id != 3
 												? Alert.alert("Parent task not completed yet!")
-												: setIsTaskInProgress(true)
+												: setShowAddSubtaskInput(true)
 										}
 									>
 										<Ionicons
@@ -477,7 +486,8 @@ const TaskDetail = ({ route, navigation }) => {
 							<View>
 								<TouchableOpacity
 									onPress={() =>
-										taskState.parent_id && taskState.task_status_id != 3
+										taskState.parent_id &&
+										taskState.parent_task.task_status_id != 3
 											? Alert.alert("Parent task not completed yet!")
 											: setShowAddSubtaskInput(true)
 									}

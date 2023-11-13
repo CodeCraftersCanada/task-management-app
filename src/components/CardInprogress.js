@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";
 import images from "../utils/imageAssets";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { formatDate } from "../utils/formatDate";
 
 const CardInprogress = ({ task, handleUpdate, navigation }) => {
@@ -25,9 +26,24 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 	return (
 		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer]}>
-				<Text style={[styles.cardLargeText, styles.colorWhite]}>
-					{task.title}
-				</Text>
+				<View style={styles.row}>
+					<View style={styles.columnLeft}>
+						<Text style={[styles.cardLargeText, styles.colorWhite]}>
+							{task.title}
+						</Text>
+					</View>
+					<View style={styles.columnRight}>
+						<Text style={[styles.cardLargeText, styles.colorWhite]}>
+							#{task.id}{" "}
+							{task.parent_id && (
+								<>
+									<Ionicons name={"link-outline"} size={28} color={"yellow"} />{" "}
+									#{task.parent_id}
+								</>
+							)}
+						</Text>
+					</View>
+				</View>
 				<View style={styles.row}>
 					<View style={styles.columnLeft}>
 						<View style={styles.row}>
@@ -81,7 +97,7 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 
 const styles = StyleSheet.create({
 	cardContainer: {
-		height: 160,
+		height: 170,
 		padding: 10,
 		backgroundColor: "#455A64",
 		marginBottom: 10,

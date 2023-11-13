@@ -88,13 +88,15 @@ const Home = React.memo(({ navigation }) => {
 		return () => clearTimeout(delayDebounceFn);
 	}, [search, completedTasks, ongoingTasks]);
 
-	const renderItem = ({ item }) => (
-		<CardInprogress
-			task={item}
-			handleUpdate={handleUpdate}
-			navigation={navigation}
-		/>
-	);
+	const renderItem = ({ item }) => {
+		return (
+			<CardInprogress
+				task={item}
+				handleUpdate={handleUpdate}
+				navigation={navigation}
+			/>
+		);
+	};
 
 	return (
 		<View style={styles.container}>

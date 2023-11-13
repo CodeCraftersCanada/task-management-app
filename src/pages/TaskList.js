@@ -22,7 +22,7 @@ const TaskList = ({ route, navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [filteredTasks, setFilteredTasks] = useState([]);
 
-	useEffect(() => {
+	const fetchTasks = () => {
 		setLoading(true);
 		getTasks(token, status, userInfo.user_type_id, userInfo.id)
 			.then((response) => {
@@ -33,9 +33,13 @@ const TaskList = ({ route, navigation }) => {
 				setLoading(false);
 			})
 			.catch((error) => {
+				console.log("Error fetching tasks:", error);
 				setLoading(false);
-				// Handle error appropriately
 			});
+	};
+
+	useEffect(() => {
+		fetchTasks();
 	}, [token, status, userInfo.user_type_id, userInfo.id]);
 
 	const handleSearchChange = (text) => {
@@ -55,6 +59,10 @@ const TaskList = ({ route, navigation }) => {
 			navigation.setOptions({ headerTitle: "Tasks" });
 		}
 	}, [navigation]);
+
+	const handleUpdate = () => {
+		fetchTasks();
+	};
 
 	if (loading) {
 		return (
@@ -100,6 +108,7 @@ const TaskList = ({ route, navigation }) => {
 									<CardComplete
 										active={index === 0}
 										task={task}
+										handleUpdate={handleUpdate}
 										navigation={navigation}
 									/>
 								</View>
@@ -109,6 +118,7 @@ const TaskList = ({ route, navigation }) => {
 									<CardInprogress
 										active={true}
 										task={task}
+										handleUpdate={handleUpdate}
 										navigation={navigation}
 									/>
 								</View>

@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import TextArea from "./TextArea";
 import { getTasks } from "../services/homeService";
 import { getMembers } from "../services/userService";
 import { useNavigation } from "@react-navigation/native";

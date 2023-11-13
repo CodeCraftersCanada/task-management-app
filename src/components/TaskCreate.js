@@ -11,11 +11,12 @@ import {
 	ScrollView,
 	Image,
 	Alert,
+	Modal,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TextArea from "./TextArea";
-import AutoCompleteDropdown from "./AutoCompleteDropdown";
+import { getTasks } from "../services/homeService";
 import { getMembers } from "../services/userService";
 import { useNavigation } from "@react-navigation/native";
 import images from "../utils/imageAssets";
@@ -26,6 +27,8 @@ const TaskCreate = () => {
 	const userInfo = useSelector((state) => state.auth.user);
 	const token = useSelector((state) => state.auth.token);
 	const [selectedMemberId, setSelectedMemberId] = useState(null);
+	const [showDropdown, setShowDropdown] = useState(false);
+	const [tasks, setTasks] = useState([]);
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -35,6 +38,8 @@ const TaskCreate = () => {
 		created_by: userInfo.id,
 		task_status_id: 2,
 		task_hours: 0,
+		parent_id: "",
+		parent_task_name: "",
 	});
 	const [members, setMembers] = useState([]);
 
@@ -54,6 +59,18 @@ const TaskCreate = () => {
 
 		return unsubscribe;
 	}, [navigation]);
+
+	useEffect(() => {
+		getTasks(token, 0, 0, 0)
+			.then((response) => {
+				if (response.data && response.data.status) {
+					setTasks(response.data.tasks);
+				}
+			})
+			.catch((error) => {
+				// Handle error appropriately
+			});
+	}, [token, 0, 0, 0]);
 
 	const handleInputChange = (key, value) => {
 		setFormData((prevState) => ({
@@ -123,7 +140,14 @@ const TaskCreate = () => {
 		hideDatePicker();
 	};
 
-	const handleLinked = () => {};
+	const handleTaskSelect = (selectedTask) => {
+		setFormData((prevState) => ({
+			...prevState,
+			parent_id: selectedTask.id,
+			parent_task_name: selectedTask.title,
+		}));
+		setShowDropdown(false);
+	};
 
 	function formatDate(date) {
 		const month = date.getMonth() + 1;
@@ -214,12 +238,36 @@ const TaskCreate = () => {
 				<View style={styles.row}>
 					<Text style={styles.fieldLabel}>Linked Task</Text>
 					<View>
-						<TouchableOpacity onPress={handleLinked}>
+						<TouchableOpacity onPress={() => setShowDropdown(!showDropdown)}>
 							<Ionicons name={"link-outline"} size={28} color={"yellow"} />
 						</TouchableOpacity>
 					</View>
+					<Modal
+						visible={showDropdown}
+						animationType="slide"
+						transparent={true}
+						onRequestClose={() => setShowDropdown(false)}
+					>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalContent}>
+								{tasks.map((task) => (
+									<TouchableOpacity
+										key={task.id}
+										style={styles.dropdownItem}
+										onPress={() => handleTaskSelect(task)}
+									>
+										<Text>{task.title}</Text>
+									</TouchableOpacity>
+								))}
+							</View>
+						</View>
+					</Modal>
 				</View>
-
+				<TextInput
+					style={styles.input}
+					placeholderTextColor="#6F8793"
+					value={formData.parent_task_name}
+				/>
 				<Text style={styles.fieldLabel}>Assign Team Member</Text>
 				<ScrollView
 					horizontal
@@ -377,7 +425,24 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 	},
 	textArea: {
-		height: 100,
+		height: 80,
+	},
+	modalContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modalContent: {
+		width: "80%",
+		backgroundColor: "#fff",
+		padding: 10,
+		borderRadius: 10,
+	},
+	dropdownItem: {
+		padding: 15,
+		borderBottomWidth: 1,
+		borderColor: "#ccc",
 	},
 });
 

@@ -123,6 +123,8 @@ const TaskCreate = () => {
 		hideDatePicker();
 	};
 
+	const handleLinked = () => {};
+
 	function formatDate(date) {
 		const month = date.getMonth() + 1;
 		const day = date.getDate();
@@ -208,6 +210,16 @@ const TaskCreate = () => {
 						</View>
 					</View>
 				</View>
+
+				<View style={styles.row}>
+					<Text style={styles.fieldLabel}>Linked Task</Text>
+					<View>
+						<TouchableOpacity onPress={handleLinked}>
+							<Ionicons name={"link-outline"} size={28} color={"yellow"} />
+						</TouchableOpacity>
+					</View>
+				</View>
+
 				<Text style={styles.fieldLabel}>Assign Team Member</Text>
 				<ScrollView
 					horizontal

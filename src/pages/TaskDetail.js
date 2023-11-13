@@ -156,7 +156,7 @@ const TaskDetail = ({ route, navigation }) => {
 			updateTask(taskState, token)
 				.then((response) => {
 					if (response.data && response.data.status) {
-						setTaskState(task);
+						setTaskState(taskState);
 						onTaskUpdate();
 						Alert.alert("Success", response.data.message);
 					}
@@ -286,7 +286,7 @@ const TaskDetail = ({ route, navigation }) => {
 											taskState.parent_id &&
 											taskState.parent_task.task_status_id != 3
 												? Alert.alert("Parent task not completed yet!")
-												: setShowAddSubtaskInput(true)
+												: setIsTaskInProgress(true)
 										}
 									>
 										<Ionicons

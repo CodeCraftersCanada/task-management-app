@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -83,10 +83,21 @@ const MainContainer = ({ navigation }) => {
 					},
 				},
 				tabBarStyle: {
-					height: 90,
-					paddingTop: 10,
-					borderTopWidth: 0,
-					backgroundColor: "#263238",
+					...(Platform.OS === "android"
+						? {
+								height: 60,
+								paddingTop: 10,
+								paddingBottom: 10,
+								borderTopWidth: 0,
+								backgroundColor: "#263238",
+						  }
+						: {
+								// Styles for other platforms
+								height: 90,
+								paddingTop: 10,
+								borderTopWidth: 0,
+								backgroundColor: "#263238",
+						  }),
 				},
 				headerStyle: {
 					backgroundColor: "#212832",

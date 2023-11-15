@@ -45,8 +45,8 @@ const Member = () => {
 				<Text style={styles.hourLabel}>{item.hourly_rate} / hr</Text>
 			</View>
 			<View style={styles.columnEnd}>
-				<Text style={styles.nameLabel}>Total Earnings</Text>
-				<Text style={styles.hourLabel}>$40,000</Text>
+				{/* <Text style={styles.nameLabel}>Total Earnings</Text>
+				<Text style={styles.hourLabel}>$40,000</Text> */}
 			</View>
 		</View>
 	);

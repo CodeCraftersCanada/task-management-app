@@ -23,6 +23,9 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 			  )
 			: 0;
 
+	const total = task.task_hours * task.assigned.hourly_rate;
+	const formattedTotal = total.toFixed(2);
+
 	return (
 		<TouchableOpacity onPress={() => handlePress(task)}>
 			<View style={[styles.cardContainer]}>
@@ -69,7 +72,7 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 						</View>
 						<View style={styles.row}>
 							<Text style={[styles.cardSmallText, styles.colorWhite]}>
-								Total Cost : ${task.task_hours * task.assigned.hourly_rate}
+								Total Cost : ${formattedTotal}
 							</Text>
 						</View>
 					</View>

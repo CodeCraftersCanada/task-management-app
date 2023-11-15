@@ -339,10 +339,24 @@ const styles = StyleSheet.create({
 	dateButtonContainer: {
 		backgroundColor: "#455A64",
 		width: "100%",
+		...(Platform.OS === "android"
+			? {
+					color: "#455A64",
+			  }
+			: {
+					color: "white",
+			  }),
 	},
 	dateButton: {
+		...(Platform.OS === "android"
+			? {
+					color: "#455A64",
+			  }
+			: {
+					color: "white",
+			  }),
 		backgroundColor: "#455A64",
-		color: "white",
+
 		fontWeight: "bold",
 		paddingVertical: 12,
 		paddingHorizontal: 4,

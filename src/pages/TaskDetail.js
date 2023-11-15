@@ -264,6 +264,9 @@ const TaskDetail = ({ route, navigation }) => {
 			.padStart(2, "0")}`;
 	};
 
+	const total = taskState.task_hours * task.assigned.hourly_rate;
+	const formattedTotal = total.toFixed(2);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.wrapper}>
@@ -419,9 +422,7 @@ const TaskDetail = ({ route, navigation }) => {
 							</View>
 							<View style={[styles.columnRight, styles.columnRight80]}>
 								<Text style={styles.smallLabel}>Total Cost</Text>
-								<Text style={styles.mediumLabel}>
-									${taskState.task_hours * task.assigned.hourly_rate}
-								</Text>
+								<Text style={styles.mediumLabel}>${formattedTotal}</Text>
 							</View>
 						</View>
 					</View>

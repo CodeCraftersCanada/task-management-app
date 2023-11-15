@@ -336,7 +336,10 @@ const styles = StyleSheet.create({
 		color: "#FFFFFF",
 		fontSize: 18,
 	},
-	dateButtonContainer: {},
+	dateButtonContainer: {
+		backgroundColor: "#455A64",
+		width: "100%",
+	},
 	dateButton: {
 		backgroundColor: "#455A64",
 		color: "white",

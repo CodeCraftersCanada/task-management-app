@@ -13,6 +13,7 @@ import {
 	Alert,
 	Modal,
 } from "react-native";
+import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -185,13 +186,16 @@ const TaskCreate = () => {
 								<TouchableOpacity style={styles.dateButtonContainer}>
 									<Button
 										title={
-											formData.start_date == ""
+											formData.start_date === ""
 												? "MM/DD/YY"
 												: formData.start_date
 										}
 										style={styles.dateButton}
 										onPress={() => showDatePicker("start")}
-										color={"white"}
+										color={Platform.select({
+											ios: "white",
+											android: "#455A64",
+										})}
 									/>
 								</TouchableOpacity>
 								<DateTimePickerModal
@@ -201,6 +205,7 @@ const TaskCreate = () => {
 									onConfirm={(date) => handleConfirm(date, "start_date")}
 									onCancel={hideDatePicker}
 									display="inline"
+									textColor="#455A64"
 								/>
 							</View>
 						</View>
@@ -213,13 +218,25 @@ const TaskCreate = () => {
 							</View>
 							<View style={styles.columnButton}>
 								<TouchableOpacity style={styles.dateButtonContainer}>
-									<Button
+									{/* <Button
 										title={
 											formData.end_date == "" ? "MM/DD/YY" : formData.end_date
 										}
 										style={styles.dateButton}
 										onPress={() => showDatePicker("end")}
 										color={"white"}
+									/> */}
+
+									<Button
+										title={
+											formData.end_date === "" ? "MM/DD/YY" : formData.end_date
+										}
+										style={styles.dateButton}
+										onPress={() => showDatePicker("start")}
+										color={Platform.select({
+											ios: "white",
+											android: "#455A64",
+										})}
 									/>
 								</TouchableOpacity>
 								<DateTimePickerModal
@@ -229,6 +246,7 @@ const TaskCreate = () => {
 									onConfirm={(date) => handleConfirm(date, "end_date")}
 									onCancel={hideDatePicker}
 									display="inline"
+									textColor="#455A64"
 								/>
 							</View>
 						</View>

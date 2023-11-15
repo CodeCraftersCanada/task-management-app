@@ -40,10 +40,10 @@ const MainContainer = ({ navigation }) => {
 						headerTitle = "Billing";
 						break;
 					case 2:
-						headerTitle = "New Task";
+						headerTitle = "Members";
 						break;
 					case 3:
-						headerTitle = "Members";
+						headerTitle = "New Task";
 						break;
 					default:
 						headerTitle = "Home";

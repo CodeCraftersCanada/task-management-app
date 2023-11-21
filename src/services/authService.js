@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../config";
 
 const signIn = (email, password) => {
-	return axios.post(`${API_BASE_URL}/api/signin`, {
+	return axios.post(`${API_BASE_URL}/api/login`, {
 		email: email,
 		password: password,
 	});

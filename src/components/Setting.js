@@ -36,7 +36,6 @@ const Setting = () => {
 	};
 
 	const handleSubmit = () => {
-		console.log("handleSubmit ");
 		updateUser(formData, token)
 			.then((response) => {
 				if (response.data && response.data.status) {

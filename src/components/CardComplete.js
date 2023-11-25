@@ -11,7 +11,7 @@ const CardComplete = ({ active, task, handleUpdate, navigation }) => {
 		});
 	};
 
-	const total = task.task_hours * task.assigned.hourly_rate;
+	const total = task.task_hours * task.assigned_to.hourly_rate;
 	const formattedTotal = total.toFixed(2);
 
 	return (
@@ -29,7 +29,7 @@ const CardComplete = ({ active, task, handleUpdate, navigation }) => {
 					<View style={[styles.columnRight]}>
 						<Image
 							style={styles.image}
-							source={images[task.assigned.filename]}
+							source={images[task.assigned_to.filename]}
 						/>
 					</View>
 				</View>

@@ -105,10 +105,10 @@ const TaskDetail = ({ route, navigation }) => {
 	const handleAdd = (title, token) => {
 		const newSubtask = {
 			title: title,
-			task_id: taskState.id, // Assuming this should be taskState.id, not task.id
+			task_id: taskState._id, // Assuming this should be taskState._id, not task._id
 			task_status_id: 1,
-			created_by: userInfo.id,
-			assigned_to: userInfo.id,
+			created_by: userInfo._id,
+			assigned_to: userInfo._id,
 			task_hours: 0,
 		};
 		if (taskState.parent_id && taskState.parent_task.task_status_id != 3) {
@@ -117,9 +117,9 @@ const TaskDetail = ({ route, navigation }) => {
 		}
 		addSubtask(newSubtask, token)
 			.then((response) => {
-				if (response.data && response.data.status) {
+				if (response.data && response.data.success) {
 					// Create a new task object with updated subtasks
-					const newSubtaskFromResponse = response.data.subTask;
+					const newSubtaskFromResponse = response.data.subtask;
 					const updatedTask = {
 						...taskState,
 						subtasks: [...taskState.subtasks, newSubtaskFromResponse],
@@ -181,7 +181,7 @@ const TaskDetail = ({ route, navigation }) => {
 		}
 
 		const subtaskIndex = taskState.subtasks.findIndex(
-			(st) => st.id === subtask.id
+			(st) => st._id === subtask._id
 		);
 		if (subtaskIndex !== -1) {
 			// Cloning the subtasks array and updating the specific subtask
@@ -191,7 +191,7 @@ const TaskDetail = ({ route, navigation }) => {
 
 			updateSubTask(updatedSubTasks[subtaskIndex], token)
 				.then((response) => {
-					if (response.data && response.data.status) {
+					if (response.data && response.data.success) {
 						// Creating a new task object with updated subtasks
 						const updatedTask = {
 							...taskState,
@@ -518,7 +518,7 @@ const TaskDetail = ({ route, navigation }) => {
 					contentContainerStyle={styles.scrollViewContainer}
 				>
 					{taskState.subtasks.map((subtask, index) => (
-						<View style={styles.row} key={subtask.id}>
+						<View style={styles.row} key={subtask._id}>
 							<View style={styles.card}>
 								<View style={styles.cardLeft}>
 									<Text style={styles.taskDescription}>{subtask.title}</Text>

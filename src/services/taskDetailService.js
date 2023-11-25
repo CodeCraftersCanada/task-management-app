@@ -10,7 +10,7 @@ const updateSubTask = (data, token) => {
 		},
 	};
 
-	return axios.put(`${API_BASE_URL}/api/subTask/${data.id}`, data, config);
+	return axios.put(`${API_BASE_URL}/api/subTask/${data._id}`, data, config);
 };
 
 const updateTask = (data, token) => {
@@ -20,7 +20,7 @@ const updateTask = (data, token) => {
 			Authorization: `Bearer ${token}`,
 		},
 	};
-	return axios.put(`${API_BASE_URL}/api/task/${data.id}`, data, config);
+	return axios.put(`${API_BASE_URL}/api/tasks/${data._id}`, data, config);
 };
 
 const addSubtask = (data, token) => {

@@ -36,7 +36,7 @@ const Home = React.memo(({ navigation }) => {
 				token,
 				3,
 				userInfo.user_type_id,
-				userInfo.id
+				userInfo._id
 			);
 			if (completedTasksResponse.data && completedTasksResponse.data.status) {
 				setCompletedTasks(completedTasksResponse.data.tasks);
@@ -46,7 +46,7 @@ const Home = React.memo(({ navigation }) => {
 				token,
 				2,
 				userInfo.user_type_id,
-				userInfo.id
+				userInfo._id
 			);
 			if (ongoingTasksResponse.data && ongoingTasksResponse.data.status) {
 				setOngoingTasks(ongoingTasksResponse.data.tasks);
@@ -84,7 +84,6 @@ const Home = React.memo(({ navigation }) => {
 				filteredResults.filter((task) => task.task_status_id === 2)
 			);
 		}, 500); // 500ms delay
-
 		return () => clearTimeout(delayDebounceFn);
 	}, [search, completedTasks, ongoingTasks]);
 
@@ -156,7 +155,7 @@ const Home = React.memo(({ navigation }) => {
 				contentContainerStyle={styles.scrollViewContainer}
 			>
 				{filteredCompletedTasks.map((task, index) => (
-					<View style={styles.card} key={task.id}>
+					<View style={styles.card} key={task._id}>
 						<CardComplete
 							active={index === 0}
 							task={task}
@@ -184,7 +183,7 @@ const Home = React.memo(({ navigation }) => {
 				<FlatList
 					data={filteredOngoingTasks}
 					renderItem={renderItem}
-					keyExtractor={(item) => item.id}
+					keyExtractor={(item, index) => item._id || index.toString()}
 					contentContainerStyle={{ paddingBottom: 20 }}
 				/>
 			</View>

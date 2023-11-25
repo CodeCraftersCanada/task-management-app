@@ -20,7 +20,7 @@ const getTasks = (token, taskStatusId, userTypeId, userId) => {
 		params: params,
 	};
 
-	return axios.get(`${API_BASE_URL}/api/task`, config);
+	return axios.get(`${API_BASE_URL}/api/tasks`, config);
 };
 
 export { getTasks };

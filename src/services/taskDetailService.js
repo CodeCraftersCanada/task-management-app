@@ -42,7 +42,7 @@ const addTask = (data, token) => {
 		},
 	};
 
-	return axios.post(`${API_BASE_URL}/api/task`, data, config);
+	return axios.post(`${API_BASE_URL}/api/tasks`, data, config);
 };
 
 export { updateSubTask, updateTask, addSubtask, addTask };

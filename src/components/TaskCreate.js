@@ -36,7 +36,7 @@ const TaskCreate = () => {
 		start_date: "",
 		end_date: "",
 		assigned_to: "",
-		created_by: userInfo.id,
+		created_by: userInfo._id,
 		task_status_id: 2,
 		task_hours: 0,
 		parent_id: "",
@@ -232,7 +232,7 @@ const TaskCreate = () => {
 											formData.end_date === "" ? "MM/DD/YY" : formData.end_date
 										}
 										style={styles.dateButton}
-										onPress={() => showDatePicker("start")}
+										onPress={() => showDatePicker("end")}
 										color={Platform.select({
 											ios: "white",
 											android: "#455A64",
@@ -294,13 +294,13 @@ const TaskCreate = () => {
 				>
 					{members.map((member, index) => (
 						<TouchableOpacity
-							key={member.id}
-							onPress={() => handleMemberSelect(member.id)}
+							key={member._id}
+							onPress={() => handleMemberSelect(member._id)}
 						>
 							<Image
 								style={[
 									styles.image,
-									isSelected(member.id) && styles.selectedImage,
+									isSelected(member._id) && styles.selectedImage,
 								]}
 								source={images[member.filename]}
 							/>

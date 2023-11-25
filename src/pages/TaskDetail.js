@@ -46,12 +46,12 @@ const TaskDetail = ({ route, navigation }) => {
 
 	useEffect(() => {
 		const newProgress =
-			taskState.sub_tasks.length > 0
+			taskState.subtasks.length > 0
 				? parseFloat(
 						(
-							taskState.sub_tasks.filter(
+							taskState.subtasks.filter(
 								(subTask) => subTask.task_status_id === 2
-							).length / taskState.sub_tasks.length
+							).length / taskState.subtasks.length
 						).toFixed(2)
 				  )
 				: 0;
@@ -118,11 +118,11 @@ const TaskDetail = ({ route, navigation }) => {
 		addSubtask(newSubtask, token)
 			.then((response) => {
 				if (response.data && response.data.status) {
-					// Create a new task object with updated sub_tasks
+					// Create a new task object with updated subtasks
 					const newSubtaskFromResponse = response.data.subTask;
 					const updatedTask = {
 						...taskState,
-						sub_tasks: [...taskState.sub_tasks, newSubtaskFromResponse],
+						subtasks: [...taskState.subtasks, newSubtaskFromResponse],
 					};
 					setTaskState(updatedTask);
 					onTaskUpdate();
@@ -180,22 +180,22 @@ const TaskDetail = ({ route, navigation }) => {
 			return;
 		}
 
-		const subtaskIndex = taskState.sub_tasks.findIndex(
+		const subtaskIndex = taskState.subtasks.findIndex(
 			(st) => st.id === subtask.id
 		);
 		if (subtaskIndex !== -1) {
-			// Cloning the sub_tasks array and updating the specific subtask
-			const updatedSubTasks = taskState.sub_tasks.map((st, index) =>
+			// Cloning the subtasks array and updating the specific subtask
+			const updatedSubTasks = taskState.subtasks.map((st, index) =>
 				index === subtaskIndex ? { ...st, task_status_id: statusId } : st
 			);
 
 			updateSubTask(updatedSubTasks[subtaskIndex], token)
 				.then((response) => {
 					if (response.data && response.data.status) {
-						// Creating a new task object with updated sub_tasks
+						// Creating a new task object with updated subtasks
 						const updatedTask = {
 							...taskState,
-							sub_tasks: updatedSubTasks,
+							subtasks: updatedSubTasks,
 						};
 						setTaskState(updatedTask);
 						onTaskUpdate();
@@ -264,7 +264,7 @@ const TaskDetail = ({ route, navigation }) => {
 			.padStart(2, "0")}`;
 	};
 
-	const total = taskState.task_hours * task.assigned.hourly_rate;
+	const total = taskState.task_hours * task.assigned_to.hourly_rate;
 	const formattedTotal = total.toFixed(2);
 
 	return (
@@ -370,7 +370,7 @@ const TaskDetail = ({ route, navigation }) => {
 								<Text style={styles.smallLabel}>Project Team</Text>
 								<Image
 									style={styles.image}
-									source={images[task.assigned.filename]}
+									source={images[task.assigned_to.filename]}
 								/>
 							</View>
 						</View>
@@ -517,7 +517,7 @@ const TaskDetail = ({ route, navigation }) => {
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={styles.scrollViewContainer}
 				>
-					{taskState.sub_tasks.map((subtask, index) => (
+					{taskState.subtasks.map((subtask, index) => (
 						<View style={styles.row} key={subtask.id}>
 							<View style={styles.card}>
 								<View style={styles.cardLeft}>

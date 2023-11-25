@@ -14,16 +14,16 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 	};
 
 	const calculatedProgress =
-		task.sub_tasks.length > 0
+		task.subtasks.length > 0
 			? parseFloat(
 					(
-						task.sub_tasks.filter((subTask) => subTask.task_status_id === 2)
-							.length / task.sub_tasks.length
+						task.subtasks.filter((subTask) => subTask.task_status_id === 2)
+							.length / task.subtasks.length
 					).toFixed(2)
 			  )
 			: 0;
 
-	const total = task.task_hours * task.assigned.hourly_rate;
+	const total = task.task_hours * task.assigned_to.hourly_rate;
 	const formattedTotal = total.toFixed(2);
 
 	return (
@@ -57,7 +57,7 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 						<View style={styles.row}>
 							<Image
 								style={styles.image}
-								source={images[task.assigned.filename]}
+								source={images[task.assigned_to.filename]}
 							/>
 						</View>
 						<View style={styles.row}>

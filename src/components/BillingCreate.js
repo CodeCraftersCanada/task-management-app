@@ -76,7 +76,7 @@ const BillingCreate = () => {
 	console.log("formdata: ", formData);
 
     useEffect(() => {
-		getTasks(token, 2, userInfo.user_type_id, userInfo._id)
+		getTasks(token, 0, userInfo.user_type_id, userInfo._id)
 			.then((response) => {
 				console.log("data: ", response.data);
 				if (response.data && response.data.status) {

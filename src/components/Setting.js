@@ -23,9 +23,8 @@ const Setting = () => {
 		_id: userInfo._id,
 		name: userInfo.name,
 		email: userInfo.email,
-		user_role_id: userInfo.user_role_id,
 		user_type_id: userInfo.user_type_id,
-		hourly_rate: userInfo.hourly_rate,
+		hourly_rate: userInfo.hourly_rate.toString(),
 	});
 
 	const handleInputChange = (key, value) => {
@@ -36,6 +35,7 @@ const Setting = () => {
 	};
 
 	const handleSubmit = () => {
+		console.log("formdata: ", formData);
 		updateUser(formData, token)
 			.then((response) => {
 				if (response.data && response.data.status) {
@@ -48,7 +48,7 @@ const Setting = () => {
 				}
 			})
 			.catch((error) => {
-				//Alert.alert("Error", "Invalid credentials!");
+				console.log("Error in saving data: ", error);
 			});
 	};
 	const navigation = useNavigation();

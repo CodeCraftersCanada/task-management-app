@@ -10,7 +10,7 @@ const updateUser = (data, token) => {
 		},
 	};
 
-	return axios.put(`${API_BASE_URL}/api/user/${data.id}`, data, config);
+	return axios.put(`${API_BASE_URL}/api/user/${data._id}`, data, config);
 };
 
 export { updateUser };

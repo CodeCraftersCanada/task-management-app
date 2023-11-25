@@ -289,7 +289,7 @@ const TaskDetail = ({ route, navigation }) => {
 							{taskState.parent_id && taskState.parent_id._id && (
 								<>
 									<Ionicons name={"link-outline"} size={28} color={"yellow"} />{" "}
-									#{taskState.parent_id._id}
+									#{taskState.parent_id._id.slice(-3)}
 								</>
 							)}
 						</Text>

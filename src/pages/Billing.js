@@ -49,7 +49,7 @@ const Billing = () => {
 			<View style={[styles.row, styles.card]}>
 				<View style={styles.columnLeft}>
 					<Text style={styles.nameLabel}>{item.task_id.title}</Text>
-					<Text style={styles.hourLabel}>{item.total_hours}</Text>
+					<Text style={styles.hourLabel}>{item.total_hours} / hour</Text>
 				</View>
 				<View style={styles.columnRight}>
 					<Text style={styles.dollarLabel}>${item.amount}</Text>
@@ -104,7 +104,7 @@ const Billing = () => {
 									/>
 									<TextInput
 										style={styles.input}
-										placeholder="Search tasks"
+										placeholder="Search invoice"
 										placeholderTextColor="#6F8793"
 										onChangeText={(value) => handleSearchChange(value)}
 										value={search}

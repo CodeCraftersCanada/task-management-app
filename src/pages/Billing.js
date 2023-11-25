@@ -48,7 +48,7 @@ const Billing = () => {
 		<TouchableOpacity onPress={() => navigation.navigate("Billing Detail", { item })}>
 			<View style={[styles.row, styles.card]}>
 				<View style={styles.columnLeft}>
-					<Text style={styles.nameLabel}>{item.task.title}</Text>
+					<Text style={styles.nameLabel}>{item.task_id.title}</Text>
 					<Text style={styles.hourLabel}>{item.total_hours}</Text>
 				</View>
 				<View style={styles.columnRight}>
@@ -57,7 +57,7 @@ const Billing = () => {
 				<View style={styles.columnEnd}>
 					<Image
 						style={styles.image}
-						source={images[item.payee.filename]}
+						source={images[item.paid_to.filename]}
 					/>
 				</View>
 			</View>
@@ -75,7 +75,7 @@ const Billing = () => {
 			setFilteredList(invoiceList);
 		} else {
 			const newData = invoiceList.filter((item) => {
-				return item.task.title.toLowerCase().search(searched) > -1;
+				return item.task_id.title.toLowerCase().search(searched) > -1;
 			});
 			console.log(newData);
 			setFilteredList(newData);
@@ -120,7 +120,7 @@ const Billing = () => {
 							<FlatList
 								data={filteredList}
 								renderItem={renderItem}
-								keyExtractor={(item) => item.id}
+								keyExtractor={(item) => item._id}
 								contentContainerStyle={{ paddingBottom: 20 }}
 							/>
 						</View>

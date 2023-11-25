@@ -99,7 +99,7 @@ const Member = () => {
 					<FlatList
 						data={filteredList}
 						renderItem={renderItem}
-						keyExtractor={(item) => item.id}
+						keyExtractor={(item) => item._id}
 						contentContainerStyle={{ paddingBottom: 20 }}
 					/>
 				</View>

@@ -20,7 +20,7 @@ const Setting = () => {
 	const token = useSelector((state) => state.auth.token);
 
 	const [formData, setFormData] = useState({
-		id: userInfo.id,
+		_id: userInfo._id,
 		name: userInfo.name,
 		email: userInfo.email,
 		user_role_id: userInfo.user_role_id,

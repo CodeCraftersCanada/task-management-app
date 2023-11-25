@@ -36,13 +36,14 @@ const BillingCreate = () => {
 		console.log("selected task: ", selectedTask);
 		setFormData((prevState) => ({
 			...prevState,
-			task_id: selectedTask.id, // Assuming task object has an ID
-			total_hours: selectedTask.task_hours,
-			hourly_rate: selectedTask.assigned.hourly_rate,
-			amount: (selectedTask.task_hours * selectedTask.assigned.hourly_rate).toString(),
-			paid_to: selectedTask.assigned.id,
-			paid_to_name: selectedTask.assigned.name,
-			created_by: userInfo.id
+			task_id: selectedTask._id, // Assuming task object has an ID
+			total_hours: selectedTask.task_hours.toString(),
+			hourly_rate: selectedTask.assigned_to.hourly_rate.toString(),
+			amount: (selectedTask.task_hours * selectedTask.assigned_to.hourly_rate).toString(),
+			paid_to: selectedTask.assigned_to._id,
+			paid_to_name: selectedTask.assigned_to.name,
+			status_id : selectedTask.task_status_id,
+			created_by: selectedTask.created_by
 
 		}));
 		setShowDropdown(false); // Close the dropdown after selection
@@ -67,7 +68,7 @@ const BillingCreate = () => {
 			}
 		})
 		.catch((error) => {
-			console.error("Error adding subtask:", error);
+			console.error("Error adding invoice:", error.message);
 		});
 	};
 
@@ -75,13 +76,16 @@ const BillingCreate = () => {
 	console.log("formdata: ", formData);
 
     useEffect(() => {
-		getTasks(token, 0, 0, 0)
+		getTasks(token, 2, userInfo.user_type_id, userInfo._id)
 			.then((response) => {
+				console.log("data: ", response.data);
 				if (response.data && response.data.status) {
+					console.log("data: ", response.data);
 					setTasks(response.data.tasks);
 				}
 			})
 			.catch((error) => {
+				console.log("error in fetching tasks: ", error);
 				// Handle error appropriately
 			});
 	}, [token, 0, 0 , 0]);
@@ -105,7 +109,7 @@ const BillingCreate = () => {
                             >
                                 <Text style={styles.input}>
                                 {formData.task_id ? (
-                                    tasks.find((task) => task.id === formData.task_id)?.title ||
+                                    tasks.find((task) => task._id === formData.task_id)?.title ||
                                     "Select Task"
                                 ) : (
                                     "Select Task"
@@ -130,7 +134,7 @@ const BillingCreate = () => {
                             <View style={styles.modalContent}>
                                 {tasks.map((task) => (
                                 <TouchableOpacity
-                                    key={task.id}
+                                    key={task._id}
                                     style={styles.dropdownItem}
                                     onPress={() => handleTaskSelect(task)}
                                 >

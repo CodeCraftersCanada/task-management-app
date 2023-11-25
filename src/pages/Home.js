@@ -72,6 +72,7 @@ const Home = React.memo(({ navigation }) => {
 	useEffect(() => {
 		const delayDebounceFn = setTimeout(() => {
 			// Filtering logic
+
 			const allTasks = [...completedTasks, ...ongoingTasks];
 			const filteredResults = allTasks.filter((task) =>
 				task.title.includes(search)

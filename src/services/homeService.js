@@ -23,4 +23,23 @@ const getTasks = (token, taskStatusId, userTypeId, userId) => {
 	return axios.get(`${API_BASE_URL}/api/tasks`, config);
 };
 
-export { getTasks };
+const getAllTasks = (token, userTypeId, userId) => {
+	const config = {
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		params:
+			userTypeId === 1
+				? {
+						created_by: userId,
+				  }
+				: {
+						assigned_to: userId,
+				  },
+	};
+
+	return axios.get(`${API_BASE_URL}/api/tasks`, config);
+};
+
+export { getTasks, getAllTasks };

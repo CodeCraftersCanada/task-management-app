@@ -37,11 +37,11 @@ const CardInprogress = ({ task, handleUpdate, navigation }) => {
 					</View>
 					<View style={styles.columnRight}>
 						<Text style={[styles.cardLargeText, styles.colorWhite]}>
-							#{task.id}{" "}
-							{task.parent_id && (
+							#{task._id}{" "}
+							{task.parent_id && task.parent_id._id && (
 								<>
 									<Ionicons name={"link-outline"} size={28} color={"yellow"} />{" "}
-									#{task.parent_id}
+									#{task.parent_id._id}
 								</>
 							)}
 						</Text>

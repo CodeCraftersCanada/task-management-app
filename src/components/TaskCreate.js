@@ -17,7 +17,7 @@ import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getTasks } from "../services/homeService";
+import { getAllTasks } from "../services/homeService";
 import { getMembers } from "../services/userService";
 import { useNavigation } from "@react-navigation/native";
 import images from "../utils/imageAssets";
@@ -62,7 +62,7 @@ const TaskCreate = () => {
 	}, [navigation]);
 
 	useEffect(() => {
-		getTasks(token, 0, 0, 0)
+		getAllTasks(token, 1, userInfo._id)
 			.then((response) => {
 				if (response.data && response.data.status) {
 					setTasks(response.data.tasks);
@@ -144,7 +144,7 @@ const TaskCreate = () => {
 	const handleTaskSelect = (selectedTask) => {
 		setFormData((prevState) => ({
 			...prevState,
-			parent_id: selectedTask.id,
+			parent_id: selectedTask._id,
 			parent_task_name: selectedTask.title,
 		}));
 		setShowDropdown(false);
@@ -218,15 +218,6 @@ const TaskCreate = () => {
 							</View>
 							<View style={styles.columnButton}>
 								<TouchableOpacity style={styles.dateButtonContainer}>
-									{/* <Button
-										title={
-											formData.end_date == "" ? "MM/DD/YY" : formData.end_date
-										}
-										style={styles.dateButton}
-										onPress={() => showDatePicker("end")}
-										color={"white"}
-									/> */}
-
 									<Button
 										title={
 											formData.end_date === "" ? "MM/DD/YY" : formData.end_date

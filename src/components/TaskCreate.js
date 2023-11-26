@@ -261,7 +261,7 @@ const TaskCreate = () => {
 							<View style={styles.modalContent}>
 								{tasks.map((task) => (
 									<TouchableOpacity
-										key={task.id}
+										key={task._id}
 										style={styles.dropdownItem}
 										onPress={() => handleTaskSelect(task)}
 									>

@@ -301,10 +301,10 @@ const TaskDetail = ({ route, navigation }) => {
 									<TouchableOpacity
 										style={styles.fixedButton}
 										onPress={() =>
-											taskState.parent_id._id &&
+											taskState.parent_id && taskState.parent_id._id != null &&
 											taskState.parent_id.task_status_id != 3
-												? Alert.alert("Parent task not completed yet!")
-												: setIsTaskInProgress(true)
+											  ? Alert.alert("Parent task not completed yet!")
+											  : setIsTaskInProgress(true)
 										}
 									>
 										<Ionicons

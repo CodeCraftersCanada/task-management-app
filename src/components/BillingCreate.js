@@ -39,7 +39,7 @@ const BillingCreate = () => {
 			task_id: selectedTask._id, // Assuming task object has an ID
 			total_hours: selectedTask.task_hours.toString(),
 			hourly_rate: selectedTask.assigned_to.hourly_rate.toString(),
-			amount: (selectedTask.task_hours * selectedTask.assigned_to.hourly_rate).toString(),
+			amount: (selectedTask.task_hours * selectedTask.assigned_to.hourly_rate).toFixed(2).toString(),
 			paid_to: selectedTask.assigned_to._id,
 			paid_to_name: selectedTask.assigned_to.name,
 			status_id : selectedTask.task_status_id,

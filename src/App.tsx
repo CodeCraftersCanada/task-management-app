@@ -2,10 +2,18 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Button from "./components/Button/Button";
+
 function App() {
+
+  const handleButton = () => {
+      console.log('PRINTING');
+  };
+
   return (
     <div className="App">
       <header className="App-header">
+        <Button title="Custom Button" description="This is a custom button" onHandleEvent={handleButton} />
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.

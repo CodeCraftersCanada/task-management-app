@@ -1,33 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-
-import Button from "./components/Button/Button";
+import { routes } from './routes';
+import { Home } from './pages';
+import Layout from './layout/Layout/Layout';
 
 function App() {
 
-  const handleButton = () => {
-      console.log('PRINTING');
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <Button title="Custom Button" description="This is a custom button" onHandleEvent={handleButton} />
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {
+            routes.map(route => (
+              <Route
+                path={route.path}
+                element={<route.component />}
+                key={route.name}
+              />
+            ))
+          }
+        </Route>
+        <Route path="*" element={<Home />}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

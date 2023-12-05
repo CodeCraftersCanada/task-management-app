@@ -1,0 +1,12 @@
+@import "../../styles/global-var.scss";
+
+.layout-container {
+    display: grid;
+    grid-template-areas: "sidebar body";
+    grid-template-columns: auto 1fr;
+}
+
+.layout-content {
+    grid-area: body;
+    background-color: $gray-7;
+}

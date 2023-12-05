@@ -1,11 +1,6 @@
 import React from "react";
+import { ButtonProps } from '../../models/ButtonProps';
 import './Button.scss';
-
-interface ButtonProps {
-    title: string,
-    description: string,
-    onHandleEvent: () => void,
-}
 
 const Button: React.FC<ButtonProps> = ({title, description, onHandleEvent}) => {
 
